@@ -1,17 +1,16 @@
-# CMS Frontend
+# CMS Backend
 
 ## tool for content management
 
-### UI local setup
+### BE local setup
 
 1. NVM install
 2. Node version 22.2.0
 3. Install packages
 4. For production mode
-   1. build scripts (`npm run build`)
-   2. start (`npm start`)
+   1. start (`npm start`)
 5. For development mode
-   1. run as dev (`npm run dev`)
+   1. run as dev (`npm run start:local`)
 
 ### For Local BE
 

@@ -4,6 +4,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
+const args = process.argv.slice(2);
+
+const isLocal = args.includes('--local');
+
+console.log('=============> ', { isLocal });
+
 const app = express();
 
 // Connect to database
