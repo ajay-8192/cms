@@ -144,7 +144,7 @@ exports.logoutUser = async (req, res) => {
 
     res.removeHeader('Authorization');
 
-    res.json({ message: 'User deleted!' });
+    res.json({ message: 'User Loggedout!' });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
