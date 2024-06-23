@@ -1,0 +1,9 @@
+exports.DAYS_IN_WEEK = 7;
+
+exports.HOURS_IN_DAY = 24;
+
+exports.MINUTES_IN_HOUR = 60;
+
+exports.SECONDS_IN_MINUTE = this.MINUTES_IN_HOUR;
+
+exports.MILLISECONDS_IN_SECOND = 1000;
