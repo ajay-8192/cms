@@ -85,7 +85,10 @@ exports.createNewUser = async (req, res) => {
     res.cookie('auth-token',
       token,
       {
-        maxAge: DAYS_IN_WEEK * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * SECONDS_IN_MINUTE
+        maxAge: DAYS_IN_WEEK * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * SECONDS_IN_MINUTE,
+        sameSite: 'None',
+        secure: false,
+        httpOnly: true
       }
     );
 
@@ -110,7 +113,7 @@ exports.loginUser = async (req, res) => {
     }
 
     if (user.password !== password) {
-      return res.status(401).json({ message: 'Invalid Password' });
+      return res.status(403).json({ message: 'Invalid Password' });
     }
 
     const token = generateToken(user);
@@ -120,7 +123,10 @@ exports.loginUser = async (req, res) => {
     res.cookie('auth-token',
       token,
       {
-        maxAge: DAYS_IN_WEEK * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * SECONDS_IN_MINUTE
+        maxAge: DAYS_IN_WEEK * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * SECONDS_IN_MINUTE,
+        sameSite: 'Lax',
+        secure: false,
+        httpOnly: true
       }
     );
 

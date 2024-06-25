@@ -16,16 +16,31 @@ const app = express();
 // Connect to database
 connectDB();
 
+// Allowed hosts
+const allowedOrigin = [
+  'http://localhost:3000'
+];
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser());
 
+app.use('*', (req, res, next) => {
+  console.log('URL:', req.originalUrl);
+  next();
+})
+
 // Routes
 app.use('/api/content', require('./routes/contentRoutes'));
 
-app.use('/user', require('./routes/userRoutes'));
+app.use('/api/user', require('./routes/userRoutes'));
+
+// app.use('/project', require('./routes/projectRoutes'));
 
 // Start server
 const PORT = process.env.PORT || 5000;
