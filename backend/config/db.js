@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('MONGO_URL', {
+    await mongoose.connect(process.env.MONGO_URI, {
       dbName: 'cms-tool'
     });
     console.log('MongoDB connected');

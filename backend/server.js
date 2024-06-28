@@ -1,9 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-require('dotenv').config();
 
 const args = process.argv.slice(2);
 
@@ -31,7 +32,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('*', (req, res, next) => {
-  console.log('URL:', req.originalUrl);
+  console.log('*'.repeat(50));
+  console.log('URL:', req.originalUrl, req.method);
+  if (req?.body) {
+    console.log('Payload:', req.body);
+  }
+  console.log('*'.repeat(50));
   next();
 })
 
@@ -40,7 +46,7 @@ app.use('/api/content', require('./routes/contentRoutes'));
 
 app.use('/api/user', require('./routes/userRoutes'));
 
-// app.use('/project', require('./routes/projectRoutes'));
+app.use('/api/project', require('./routes/projectRoutes'));
 
 // Start server
 const PORT = process.env.PORT || 5000;

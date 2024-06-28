@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const ContentSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  body: { type: String, required: true },
-  author: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  lastModifiedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  data: { type: Map, of: String },
+  project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
   createdAt: { type: Date, default: Date.now },
   modifiedAt: { type: Date, default: Date.now },
 });

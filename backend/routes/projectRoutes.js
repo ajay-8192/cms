@@ -1,11 +1,16 @@
 const express = require('express');
-const { authenticate } = require('../middleware/auth');
 const router = express.Router();
 
-router.use('*', authenticate);
+const { authenticate } = require('../middleware/auth');
+const Project = require('../models/project');
+const ProjectController = require('../controllers/projectController');
 
-router.get('/', authenticate, (req, res) => {
-  res.json({
-    message: 'Fetched all projects'
-  });
-});
+router.get('/', authenticate, ProjectController.fetchProjects);
+
+router.post('/create', authenticate, ProjectController.createNewProject);
+
+router.post('/add-allowed-access', authenticate, ProjectController.addAllowedAccess);
+
+router.post('/provide-access', authenticate, ProjectController.provideAccess);
+
+module.exports = router;

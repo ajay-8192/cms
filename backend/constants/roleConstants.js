@@ -1,5 +1,9 @@
-const PROJECT_ADMIN = 'PROJECT_ADMIN';
+const ADMIN = 'ADMIN';
 const VIEWER = 'VIEWER';
 const EDITOR = 'EDITOR';
 
-exports.ROLE_TYPES = [PROJECT_ADMIN, VIEWER, EDITOR];
+exports.ROLE_TYPES = {
+  ADMIN,
+  VIEWER,
+  EDITOR
+};
