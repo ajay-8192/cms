@@ -13,4 +13,6 @@ router.post('/add-allowed-access', authenticate, ProjectController.addAllowedAcc
 
 router.post('/provide-access', authenticate, ProjectController.provideAccess);
 
+router.post('/settings', authenticate, ProjectController.editProjectSettings);
+
 module.exports = router;

@@ -103,4 +103,13 @@ exports.addAllowedAccess = async (req, res) => {
   } catch (error) {
     res.json(500).json({ error: error.message });
   }
-}
+};
+
+exports.editProjectSettings = async (req, res) => {
+  try {
+    const { settings } = req.body;
+    console.log('=====> SETTINGS', JSON.stringify({ settings }, null, 2));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
