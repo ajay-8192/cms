@@ -39,12 +39,6 @@ const Login:React.FC<LoginProps> = () => {
       })
         .then(response => {
           if (response.ok) {
-            const token = response.headers.get('Authorization');
-            console.log('============> TOKEN', { token, headers: response });
-            
-            if (token) {
-              document.cookie = `auth-token=${token};`;
-            }
             router.push('/');
           } else {
             throw new Error('Error while login');

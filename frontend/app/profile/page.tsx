@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
+import { useAppContext } from "@/context/AppContext";
 
 export default function Profile() {
 
   const router = useRouter();
   const [userDetails, setUserDetails] = useState({});
+  const { state, dispatch } = useAppContext();
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -17,7 +19,9 @@ export default function Profile() {
         });
         if (response.ok) {
           const data = await response.json();
-          setUserDetails(data);
+          const { _id: id, name, email } = data.user;
+          dispatch({ type: 'SET_USER_DETAILS', payload: { id, name, email } });
+          setUserDetails({ id, name, email });
         } else {
           router.push('/login');
         }
@@ -27,7 +31,11 @@ export default function Profile() {
       }
     };
 
-    checkLoggedIn();
+    if (!state.userDetails.id) {
+      checkLoggedIn();
+    } else {
+      setUserDetails({ ...state.userDetails });
+    }
   }, []);
 
   const handleLogout = (e: any) => {
