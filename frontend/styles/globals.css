@@ -8,6 +8,10 @@
   }
 }
 
+body {
+  font-weight: 500;
+}
+
 /* Custom class to hide scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* for Chrome, Safari, and Opera */
