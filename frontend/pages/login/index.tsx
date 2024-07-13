@@ -1,12 +1,16 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/Input';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 type LoginProps = {};
 
 const Login:React.FC<LoginProps> = () => {
 
   const [loginDetails, setLoginDetails] = useState({ email: null, password: null });
+
+  const user = useSelector((state: RootState) => state.user);
 
   const router = useRouter();
 
@@ -20,6 +24,14 @@ const Login:React.FC<LoginProps> = () => {
       [name]: value
     });
   };
+
+  useEffect(() => {
+    console.log('USER', user);
+    
+    if (user.userLoggedIn) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   const handleLogin = (e: any) => {
 

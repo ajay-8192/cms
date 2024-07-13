@@ -1,12 +1,12 @@
 import { GetServerSideProps } from 'next';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, wrapper } from '@/store';
+import { wrapper } from '@/store';
 import Image from 'next/image';
 import LogoutButton from '@/components/LogoutButton';
 import Sidebar from '@/components/Sidebar';
 import ProjectList from '@/components/ProjectList';
 import React from 'react';
-import { setUserDetails } from '@/store/loginSlice';
+import { setUserDetails } from '@/store/userSlice';
+import Content from '@/components/content';
 
 type HomeProps = {
   user: object
@@ -15,21 +15,24 @@ type HomeProps = {
 const Home: React.FC<HomeProps> = ({ user }) => {
   return (
     <div>
-      <header className="flex items-center justify-between px-20 h-[108px] shadow-xl w-full">
-        <Image src="/logo-color.png" height={108} width={108} alt="Logo" />
+      <header className="flex items-center justify-between px-20 h-16 shadow-xl w-full">
+        <Image src="/logo-color.png" height={108} width={108} alt="Logo" fetchPriority='high' className='rounded-full p-4' />
         <div className="font-bold text-3xl text-primary-blue">Content Management System</div>
         <LogoutButton />
       </header>
       <main className="flex w-full h-[calc(100vh-108px)]">
         <Sidebar />
         <article className="flex w-full justify-between">
-          <pre>
-            {JSON.stringify(user, null, 2)}
-          </pre>
+          <div className='w-full overflow-auto scrollbar-hide'>
+            <Content />
+            {/* <pre>
+              {JSON.stringify(user, null, 2)}
+            </pre> */}
+          </div>
+
           <ProjectList />
         </article>
       </main>
-      {/* <button onClick={() => dispatch(setUserDetails({ login: true }))}>Increment by 1</button> */}
     </div>
   );
 };
@@ -40,14 +43,12 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     let user = {};
 
     // get User details
-    const { userDetails, userLoggedIn } = store.getState().login;
+    const { userDetails, userLoggedIn } = store.getState().user;
 
     // If user is not logged in
     if (!userLoggedIn) {
       try {
         const { req } = context;
-        console.log(JSON.stringify(req.headers, null, 2));
-        console.log(typeof req.headers);
         
         const response = await fetch('http://localhost:5000/api/user/details', {
           headers: {

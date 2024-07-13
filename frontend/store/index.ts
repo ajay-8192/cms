@@ -1,20 +1,18 @@
 import { combineReducers } from "redux";
-import loginReducer from "./loginSlice";
+import userReducer from "./userSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, persistStore } from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
-import locationSlice from "./locationSlice";
 
 const rootReducer = combineReducers({
-  login: loginReducer,
-  location: locationSlice,
+  user: userReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['login', 'location']
+  whitelist: ['user']
 };
 
 const persistReducers = persistReducer(persistConfig, rootReducer);

@@ -1,13 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useActionState } from 'react';
 import Button from '../Button';
+import { useDispatch } from 'react-redux';
+import { removeUserDetails } from '@/store/userSlice';
 
 const LogoutButton = () => {
 
   const router = useRouter();
-  
+  const dispatch = useDispatch();
+
   const handleLogout = (e: any) => {
     e.preventDefault();
 
@@ -19,6 +22,7 @@ const LogoutButton = () => {
       credentials: 'include'
     })
       .then(() => {
+        dispatch(removeUserDetails());
         router.push('/login');
       })
       .catch(error => {
