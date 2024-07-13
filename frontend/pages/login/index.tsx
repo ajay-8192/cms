@@ -1,8 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/Input';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { userLogin } from '@/api/user';
+import { setUserDetails } from '@/store/userSlice';
+import Image from 'next/image';
 
 type LoginProps = {};
 
@@ -13,6 +16,7 @@ const Login:React.FC<LoginProps> = () => {
   const user = useSelector((state: RootState) => state.user);
 
   const router = useRouter();
+  const dispatch =  useDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -23,6 +27,8 @@ const Login:React.FC<LoginProps> = () => {
       ...loginDetails,
       [name]: value
     });
+
+    e.stopPropagation();
   };
 
   useEffect(() => {
@@ -33,32 +39,17 @@ const Login:React.FC<LoginProps> = () => {
     }
   }, [user, router]);
 
-  const handleLogin = (e: any) => {
-
+  const handleLogin = async (e: any) => {
     e.preventDefault();
 
     const { email, password } = loginDetails;
 
     if (email && password) {
-      fetch('http://localhost:5000/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'
-      })
-        .then(response => {
-          if (response.ok) {
-            router.push('/');
-          } else {
-            throw new Error('Error while login');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+      const responseObj = await userLogin({ email, password });
+      dispatch(setUserDetails(responseObj));
     }
+
+    e.stopPropagation();
   };
 
   const handleSignup = () => {
@@ -66,20 +57,30 @@ const Login:React.FC<LoginProps> = () => {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form className='flex flex-col justify-center items-center w-2/4'>
+    <div className='p-8 min-h-screen'>
+      <main className="flex w-full min-h-[calc(100vh-64px)] text-primary-blue shadow-xl rounded-2xl overflow-hidden">
+        <form className='flex flex-col justify-center items-center p-8 laptop:w-1/2 overflow-hidden'>
 
-        <label className='w-full'>Email:</label>
-        <Input type='email' onChange={handleChange} name='email' classes='w-full mt-3 text-black' />
+          <Image src={'/logo-black.png'} width={104} height={52} alt='CMS' />
+          <div className='mb-12 text-3xl font-bold w-1/2'>Log in to your account</div>
 
-        <label className='w-full mt-6'>Password:</label>
-        <Input type='password' onChange={handleChange} name='password' classes='w-full mt-3 text-black' />
+          <label className='w-1/2'>Email</label>
+          <Input type='email' onChange={handleChange} name='email' classes='w-1/2 mt-3 border rounded' />
 
-        <button onClick={handleLogin} className='mt-6 px-4 py-2 bg-white text-black'>Login</button>
-        
-      </form>
-      <button onClick={handleSignup} className='px-4 py-2 bg-white text-black'>Sign up</button>
-    </main>
+          <label className='w-1/2 mt-6'>Password</label>
+          <Input type='password' onChange={handleChange} name='password' classes='w-1/2 mt-3 border rounded' />
+
+          <div className='flex justify-around items-center w-1/2'>
+            <button onClick={handleLogin} className='mt-6 px-4 py-2 border rounded-xl bg-slate-400 active:bg-slate-700 text-primary-white'>Login</button>
+            <button onClick={handleSignup} className='mt-6 px-4 py-2 border rounded-xl bg-orange-400 active:bg-orange-700 text-primary-white'>Sign up</button>
+          </div>
+        </form>
+
+        <div className='hidden laptop:block w-1/2 relative'>
+          <Image src={'/login.jpg'} alt='Login' className='w-full h-full' objectFit='cover' fill />
+        </div>
+      </main>
+    </div>
   )
 }
 
