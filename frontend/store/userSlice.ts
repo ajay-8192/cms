@@ -21,7 +21,8 @@ const userSlice = createSlice({
       }
     },
     removeUserDetails: state => {
-      Object.assign(state, initialState);
+      state.userLoggedIn = false,
+      state.userDetails = {}
     },
   },
 });

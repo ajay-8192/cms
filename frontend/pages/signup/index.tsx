@@ -1,46 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Input from '@/components/Input';
+import Image from 'next/image';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { ToasterProvider } from '@/context/ToasterContext';
+import SignupForm from '@/components/SignupForm';
 
 type SignupProps = {};
 
-const Signup:React.FC<SignupProps> = () => {
-
-  const [loginDetails, setLoginDetails] = useState({});
-
-  const handleChange = (e: any) => {
-    e.preventDefault();
-    const { value, name } = e.target;
-    setLoginDetails({
-      ...loginDetails,
-      [name]: value
-    });
-  };
-
+const Signup: React.FC<SignupProps> = () => {
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.user);
 
-  const handleSignup = () => {};
-
-  const handleLogin = () => {
-    router.push('/login');
-  };
+  useEffect(() => {
+    console.log('USER', user);
+    
+    if (user.userLoggedIn && Object.keys(user.userDetails).length) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form>
-        <label>Email:</label>
-        <Input type='email' onChange={handleChange} name='email' />
+    <ToasterProvider>
+      <div className='p-8 min-h-screen'>
+        <main className="flex w-full min-h-[calc(100vh-64px)] text-primary-blue shadow-xl rounded-2xl overflow-hidden">
+          <SignupForm />
 
-        <label>Password:</label>
-        <Input type='password' onChange={handleChange} name='password' />
-
-        <label>Confirm Password:</label>
-        <Input type='password' onChange={handleChange} name='confirm_password' />
-
-        <button onClick={handleSignup}>Signup</button>
-      </form>
-      <button onClick={handleLogin}>Login</button>
-    </main>
+          <div className='hidden tablet:block w-1/2 relative'>
+            <Image src={'/login.jpg'} alt='Login' className='w-full h-full' objectFit='cover' fill />
+          </div>
+        </main>
+      </div>
+    </ToasterProvider>
   )
 }
 

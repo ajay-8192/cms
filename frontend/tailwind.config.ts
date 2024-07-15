@@ -11,7 +11,7 @@ const config: Config = {
       screens: {
         mobile: '360px',
         mobileLandscape: '414px',
-        tablet: '600px',
+        tablet: '768px',
         laptop: '1024px',
         desktop: '1440px',
         monitor: '1920px'

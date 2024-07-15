@@ -7,6 +7,7 @@ import ProjectList from '@/components/ProjectList';
 import React from 'react';
 import { setUserDetails } from '@/store/userSlice';
 import Content from '@/components/content';
+import { fetchUserDetails } from '@/api/user';
 
 type HomeProps = {
   user: object
@@ -50,24 +51,11 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
       try {
         const { req } = context;
         
-        const response = await fetch('http://localhost:5000/api/user/details', {
-          headers: {
-            'Authorizarion': req.headers.authorization || '',
-            'Cookie': req.headers.cookie || ''
-          },
-          credentials: 'include'
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          
-          user = {
-            ...data
-          }
-          store.dispatch(setUserDetails({ ...data }));
-        } else {
-          console.log('==========> API error');
-          
+        const { authorization, cookie } = req.headers;
+
+        const responseObj = await fetchUserDetails(authorization, cookie);
+
+        if (!responseObj.isLogin) {
           return {
             redirect: {
               permanent: false,
@@ -75,7 +63,11 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
             }
           }
         }
-  
+
+        user = responseObj.userDetails;
+
+        store.dispatch(setUserDetails(user));
+
       } catch (error) {
         console.error('Error:', error);
 
@@ -90,8 +82,6 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     } else {
       user = { ...userDetails }
     }
-    
-    // store.dispatch(removeUserDetails());
 
     return {
       props: {
