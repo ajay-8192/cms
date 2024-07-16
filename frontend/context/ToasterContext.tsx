@@ -1,15 +1,24 @@
-import React, { ReactElement, createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type ToasterContextType = {
-  showToast: (message: string, type: 'success' | 'error') => void;
+  showToast: (message: string, type: "success" | "error") => void;
 };
 
-export const ToasterContext = createContext<ToasterContextType | undefined>(undefined);
+export const ToasterContext = createContext<ToasterContextType | undefined>(
+  undefined,
+);
 
 export const useToaster = () => {
   const context = useContext(ToasterContext);
   if (!context) {
-    throw new Error('useToaster must be used within a ToasterProvider');
+    throw new Error("useToaster must be used within a ToasterProvider");
   }
   return context;
 };
@@ -19,11 +28,11 @@ type ProviderProps = {
 };
 
 export const ToasterProvider: React.FC<ProviderProps> = ({ children }) => {
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
   const [isVisible, setIsVisible] = useState(false);
 
-  const showToast = (message: string, type: 'success' | 'error') => {
+  const showToast = (message: string, type: "success" | "error") => {
     setToastMessage(message);
     setToastType(type);
     setIsVisible(true);
@@ -58,16 +67,20 @@ export const ToasterProvider: React.FC<ProviderProps> = ({ children }) => {
   return (
     <ToasterContext.Provider value={{ showToast }}>
       {isVisible ? (
-        <div className={`absolute left-auto z-20 ${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white rounded-lg shadow-lg overflow-hidden`} style={{ right: '8px', top: '8px' }}>
-          <div className='flex items-center w-full p-4'>
-            <div className="text-white">
-              {toastMessage}
-            </div>
+        <div
+          className={`absolute left-auto z-20 ${toastType === "success" ? "bg-green-500" : "bg-red-500"} text-white rounded-lg shadow-lg overflow-hidden`}
+          style={{ right: "8px", top: "8px" }}
+        >
+          <div className="flex items-center w-full p-4">
+            <div className="text-white">{toastMessage}</div>
             <button onClick={onClose} className="ml-6 text-white">
               &times;
             </button>
           </div>
-          <div className="bg-white transition-all" style={{ width: `${progress}%`, height: '2px' }}></div>
+          <div
+            className="bg-white transition-all"
+            style={{ width: `${progress}%`, height: "2px" }}
+          ></div>
         </div>
       ) : null}
       {children}

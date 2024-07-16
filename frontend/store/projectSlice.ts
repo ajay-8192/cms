@@ -1,9 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ProjectState {
-  projectList: object[],
-  selectedProject: string | null
-};
+  projectList: object[];
+  selectedProject: string | null;
+}
 
 const initialState: ProjectState = {
   projectList: [],
@@ -11,16 +11,16 @@ const initialState: ProjectState = {
 };
 
 const projectSlice = createSlice({
-  name: 'project',
+  name: "project",
   initialState,
   reducers: {
     setAllProject: (state, action: PayloadAction<object[]>) => {
-      state.projectList = [ ...action.payload ];
+      state.projectList = [...action.payload];
     },
     setSelectedProject: (state, action: PayloadAction<string>) => {
       state.selectedProject = action.payload;
-    }
-  }
+    },
+  },
 });
 
 export const {} = projectSlice.actions;

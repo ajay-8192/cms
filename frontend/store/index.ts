@@ -1,7 +1,16 @@
 import { combineReducers } from "redux";
 import userReducer from "./userSlice";
 import storage from "redux-persist/lib/storage";
-import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, persistStore } from "redux-persist";
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  persistStore,
+} from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 
@@ -10,22 +19,23 @@ const rootReducer = combineReducers({
 });
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['user']
+  whitelist: ["user"],
 };
 
 const persistReducers = persistReducer(persistConfig, rootReducer);
 
-const makeStore = () => configureStore({
-  reducer: persistReducers,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-});
+const makeStore = () =>
+  configureStore({
+    reducer: persistReducers,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }),
+  });
 
 export const store = makeStore();
 export const persistor = persistStore(store);

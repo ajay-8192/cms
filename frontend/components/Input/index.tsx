@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent } from "react";
 
 type InputProps = {
   type: string;
@@ -7,10 +7,20 @@ type InputProps = {
   classes?: string;
 };
 
-const Input: React.FC<InputProps> = ({ type, onChange, classes = '', name }) => {
+const Input: React.FC<InputProps> = ({
+  type,
+  onChange,
+  classes = "",
+  name,
+}) => {
   return (
-    <input type={type || 'text'} onChange={onChange} className={classes} name={name} />
-  )
-}
+    <input
+      type={type || "text"}
+      onChange={onChange}
+      className={classes}
+      name={name}
+    />
+  );
+};
 
 export default Input;

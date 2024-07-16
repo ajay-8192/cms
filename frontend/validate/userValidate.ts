@@ -6,13 +6,15 @@ export const loginValidate = (data: LoginTypes) => {
     isValid: true,
     errorObj: {
       email: "",
-      password: ""
-    }
+      password: "",
+    },
   };
 
   if (!data.email || !validateEmail(data.email)) {
     validObj.isValid = false;
-    validObj.errorObj.email = data.email ? "Invalid Email" : "Email is mandotary";
+    validObj.errorObj.email = data.email
+      ? "Invalid Email"
+      : "Email is mandotary";
   }
 
   if (!data.password) {
@@ -30,8 +32,8 @@ export const signupValidate = (data: SignupTypes) => {
       name: "",
       email: "",
       password: "",
-      confirmPassword: ""
-    }
+      confirmPassword: "",
+    },
   };
 
   if (!data.name) {
@@ -41,7 +43,9 @@ export const signupValidate = (data: SignupTypes) => {
 
   if (!data.email || !validateEmail(data.email)) {
     validObj.isValid = false;
-    validObj.errorObj.email = data.email ? "Invalid Email" : "Email is mandotary";
+    validObj.errorObj.email = data.email
+      ? "Invalid Email"
+      : "Email is mandotary";
   }
 
   if (!data.password) {
@@ -54,12 +58,16 @@ export const signupValidate = (data: SignupTypes) => {
     validObj.errorObj.confirmPassword = "Confirm Password Required";
   }
 
-  if (data.password && data.confirmPassword && data.password !== data.confirmPassword) {
+  if (
+    data.password &&
+    data.confirmPassword &&
+    data.password !== data.confirmPassword
+  ) {
     validObj.isValid = false;
     validObj.errorObj.confirmPassword = "Confirm Password Not Matching";
   }
 
-  console.log('===========> validObj', { validObj });
+  console.log("===========> validObj", { validObj });
 
   return validObj;
 };

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from "react";
 
 type ButtonProps = {
   onClick: MouseEventHandler<HTMLButtonElement>;
@@ -9,8 +9,13 @@ type ButtonProps = {
 
 const Button: React.FC<ButtonProps> = ({ onClick, text }) => {
   return (
-    <button className="bg-primary-blue px-4 py-2 rounded text-primary-white" onClick={onClick}>{text}</button>
-  )
+    <button
+      className="bg-primary-blue px-4 py-2 rounded text-primary-white"
+      onClick={onClick}
+    >
+      {text}
+    </button>
+  );
 };
 
 export default Button;

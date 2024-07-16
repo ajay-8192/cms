@@ -1,46 +1,38 @@
-import { GetServerSideProps } from 'next';
-import { wrapper } from '@/store';
-import Image from 'next/image';
-import LogoutButton from '@/components/LogoutButton';
-import Sidebar from '@/components/Sidebar';
-import ProjectList from '@/components/ProjectList';
-import React from 'react';
-import { setUserDetails } from '@/store/userSlice';
-import Content from '@/components/content';
-import { fetchUserDetails } from '@/api/user';
+import { GetServerSideProps } from "next";
+import { wrapper } from "@/store";
+import Image from "next/image";
+import LogoutButton from "@/components/LogoutButton";
+import Sidebar from "@/components/Sidebar";
+import ProjectList from "@/components/ProjectList";
+import React from "react";
+import { setUserDetails } from "@/store/userSlice";
+import Content from "@/components/content";
+import { fetchUserDetails } from "@/api/user";
 
 type HomeProps = {
-  user: object
+  user: object;
 };
 
 const Home: React.FC<HomeProps> = ({ user }) => {
   return (
-    <div>
-      <header className="flex items-center justify-between px-20 h-16 shadow-xl w-full">
-        <Image src="/logo-color.png" height={108} width={108} alt="Logo" fetchPriority='high' className='rounded-full p-4' />
-        <div className="font-bold text-3xl text-primary-blue">Content Management System</div>
-        <LogoutButton />
-      </header>
-      <main className="flex w-full h-[calc(100vh-108px)]">
-        <Sidebar />
-        <article className="flex w-full justify-between">
-          <div className='w-full overflow-auto scrollbar-hide'>
-            <Content />
-            {/* <pre>
-              {JSON.stringify(user, null, 2)}
-            </pre> */}
-          </div>
+    <main className="flex w-full h-screen">
+      <Sidebar activePath="/" />
+      <article className="flex w-full justify-between">
+        <div className="w-full overflow-auto scrollbar-hide">
+          <Content />
+          {/* <pre>
+            {JSON.stringify(user, null, 2)}
+          </pre> */}
+        </div>
 
-          <ProjectList />
-        </article>
-      </main>
-    </div>
+        <ProjectList />
+      </article>
+    </main>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
-  (store) => async (context) => {
-
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps((store) => async (context) => {
     let user = {};
 
     // get User details
@@ -50,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     if (!userLoggedIn) {
       try {
         const { req } = context;
-        
+
         const { authorization, cookie } = req.headers;
 
         const responseObj = await fetchUserDetails(authorization, cookie);
@@ -59,36 +51,33 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
           return {
             redirect: {
               permanent: false,
-              destination: '/login'
-            }
-          }
+              destination: "/login",
+            },
+          };
         }
 
         user = responseObj.userDetails;
 
         store.dispatch(setUserDetails(user));
-
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
 
         return {
           redirect: {
             permanent: false,
-            destination: '/login'
-          }
-        }
+            destination: "/login",
+          },
+        };
       }
-
     } else {
-      user = { ...userDetails }
+      user = { ...userDetails };
     }
 
     return {
       props: {
-        user
+        user,
       },
     };
-  }
-);
+  });
 
 export default Home;

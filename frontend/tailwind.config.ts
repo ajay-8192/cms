@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        mobile: '360px',
-        mobileLandscape: '414px',
-        tablet: '768px',
-        laptop: '1024px',
-        desktop: '1440px',
-        monitor: '1920px'
+        mobile: "360px",
+        mobileLandscape: "414px",
+        tablet: "768px",
+        laptop: "1024px",
+        desktop: "1440px",
+        monitor: "1920px",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -23,11 +23,11 @@ const config: Config = {
       },
       colors: {
         primary: {
-          DEFAULT: '#2F76DB',
-          white: '#FBFBFB',
-          blue: '#1F2D5A'
-        }
-      }
+          DEFAULT: "#2F76DB",
+          white: "#FBFBFB",
+          blue: "#1F2D5A",
+        },
+      },
     },
   },
   plugins: [],
