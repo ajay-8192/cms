@@ -16,7 +16,7 @@ export const SIDEBAR_ITEMS = {
       id: 3,
       name: "Create Project",
       route: "/create-project",
-      icon: "create",
+      icon: "create_new_folder",
     },
     {
       id: 4,

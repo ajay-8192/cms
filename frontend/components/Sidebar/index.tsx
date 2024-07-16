@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePath = "/" }) => {
         })}
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-6">
         <div
           className={`font-semibold flex items-center gap-4 p-2 rounded-xl cursor-pointer`}
           onClick={onLogout}

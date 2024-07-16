@@ -1,7 +1,5 @@
 import { GetServerSideProps } from "next";
 import { wrapper } from "@/store";
-import Image from "next/image";
-import LogoutButton from "@/components/LogoutButton";
 import Sidebar from "@/components/Sidebar";
 import ProjectList from "@/components/ProjectList";
 import React from "react";
@@ -56,9 +54,9 @@ export const getServerSideProps: GetServerSideProps =
           };
         }
 
-        user = responseObj.userDetails;
+        user = responseObj.userDetails.user;
 
-        store.dispatch(setUserDetails(user));
+        store.dispatch(setUserDetails({ user }));
       } catch (error) {
         console.error("Error:", error);
 

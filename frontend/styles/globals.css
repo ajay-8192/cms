@@ -30,3 +30,7 @@ body {
   font-size: 24px !important;
   color: #fbfbfb;
 }
+
+.material-icons.profile {
+  font-size: 64px !important;
+}

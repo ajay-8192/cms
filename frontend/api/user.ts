@@ -1,10 +1,10 @@
 import { LoginTypes, SignupTypes } from "@/types/userTypes";
 import { loginValidate, signupValidate } from "@/validate/userValidate";
 
-export const userLogin = async (data: LoginTypes) => {
+export const userLogin = async (data: LoginTypes): Promise<{ userDetails: { user: object }; validObj: { isValid: boolean, errorObj: any } }> => {
   const validObj = loginValidate(data);
 
-  if (!validObj.isValid) return { validObj };
+  if (!validObj.isValid) return { validObj, userDetails: { user: {} } };
 
   const URL = `${process.env.API_HOST || "http://localhost:5000/api"}/user/login`;
 
@@ -25,7 +25,9 @@ export const userLogin = async (data: LoginTypes) => {
     const userDetailsJson = await userDetails.json();
 
     return {
-      userDetails: userDetailsJson,
+      userDetails: {
+        user: userDetailsJson.user
+      },
       validObj,
     };
   } catch (error) {
@@ -35,14 +37,15 @@ export const userLogin = async (data: LoginTypes) => {
         ...validObj,
         isValid: false,
       },
+      userDetails: { user: {} }
     };
   }
 };
 
-export const userSignup = async (data: SignupTypes) => {
+export const userSignup = async (data: SignupTypes): Promise<{ userDetails: { user: object }; validObj: { isValid: boolean, errorObj: any } }> => {
   const validObj = signupValidate(data);
 
-  if (!validObj.isValid) return { validObj };
+  if (!validObj.isValid) return { validObj, userDetails: { user: {} } };
 
   const URL = `${process.env.API_HOST || "http://localhost:5000/api"}/user/signup`;
 
@@ -63,7 +66,9 @@ export const userSignup = async (data: SignupTypes) => {
     const userDetailsJson = await userDetails.json();
 
     return {
-      userDetails: userDetailsJson,
+      userDetails: {
+        user: userDetailsJson.user
+      },
       validObj,
     };
   } catch (error) {
@@ -75,13 +80,14 @@ export const userSignup = async (data: SignupTypes) => {
       ...validObj,
       isValid: false,
     },
+    userDetails: { user: {} }
   };
 };
 
 export const fetchUserDetails = async (
   authorization: string | undefined,
   cookie: string | undefined,
-) => {
+): Promise<{ userDetails: { user: object }; isLogin: boolean }> => {
   try {
     const URL = `${process.env.API_HOST || "http://localhost:5000/api"}/user/details`;
     const userDetails = await fetch(URL, {
@@ -98,8 +104,12 @@ export const fetchUserDetails = async (
 
     const userDetailsJson = await userDetails.json();
 
+    console.log('====> ', { userDetailsJson });
+
     return {
-      userDetails: userDetailsJson,
+      userDetails: {
+        user: userDetailsJson.user
+      },
       isLogin: true,
     };
   } catch (error) {
@@ -107,6 +117,7 @@ export const fetchUserDetails = async (
   }
 
   return {
+    userDetails: { user: {} },
     isLogin: false,
   };
 };

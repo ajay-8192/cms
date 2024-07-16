@@ -32,7 +32,8 @@ const SignupForm = () => {
 
     const responseObj = await userSignup(signupDetails);
     if (responseObj.validObj.isValid && responseObj.userDetails) {
-      dispatch(setUserDetails(responseObj.userDetails));
+      dispatch(setUserDetails({user: responseObj.userDetails.user }));
+
       showToast("Create New User Successfully!!", "success");
     } else {
       showToast("Not able to create user", "error");
