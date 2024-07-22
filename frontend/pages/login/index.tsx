@@ -17,6 +17,7 @@ const Login: React.FC<LoginProps> = () => {
     console.log("USER", user);
 
     if (user.userLoggedIn && Object.keys(user.userDetails).length) {
+      console.log("=======> ");
       router.push("/");
     }
   }, [user, router]);

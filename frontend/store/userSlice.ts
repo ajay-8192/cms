@@ -11,8 +11,8 @@ interface UserState {
 const initialState: UserState = {
   userLoggedIn: false,
   userDetails: {
-    email: '',
-    name: ''
+    email: "",
+    name: "",
   },
 };
 
@@ -21,8 +21,8 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action: PayloadAction<{ user: object }>) => {
-      console.log('====> action', { action });
-      
+      console.log("====> action", { action });
+
       (state.userLoggedIn = true),
         (state.userDetails = {
           ...state.userDetails,
@@ -31,7 +31,7 @@ const userSlice = createSlice({
     },
     removeUserDetails: (state) => {
       state.userLoggedIn = false;
-      state.userDetails = { email: '', name: '' };
+      state.userDetails = { email: "", name: "" };
     },
   },
 });

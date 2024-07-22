@@ -1,7 +1,12 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement } from "react";
 
-const Modal = ({ children, onClose }: { children: ReactElement, onClose: () => void }) => {
-
+const Modal = ({
+  children,
+  onClose,
+}: {
+  children: ReactElement;
+  onClose: () => void;
+}) => {
   const handleClick = (e: any) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -9,12 +14,13 @@ const Modal = ({ children, onClose }: { children: ReactElement, onClose: () => v
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleClick}>
-      <div className="bg-white p-8 rounded-2xl">
-        {children}
-      </div>
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10"
+      onClick={handleClick}
+    >
+      <div className="bg-white p-8 rounded-2xl">{children}</div>
     </div>
-  )
-}
+  );
+};
 
 export default Modal;

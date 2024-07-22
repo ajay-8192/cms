@@ -26,9 +26,21 @@ const persistConfig = {
 
 const persistReducers = persistReducer(persistConfig, rootReducer);
 
-const makeStore = () =>
-  configureStore({
+// const makeStore = () =>
+//   configureStore({
+//     reducer: persistReducers,
+//     middleware: (getDefaultMiddleware) =>
+//       getDefaultMiddleware({
+//         serializableCheck: {
+//           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+//         },
+//       }),
+//   });
+
+const makeStore = () => {
+  const store = configureStore({
     reducer: persistReducers,
+    // Add any middleware or enhancers here
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
@@ -36,6 +48,11 @@ const makeStore = () =>
         },
       }),
   });
+
+  (store as any).__persistor = persistStore(store); // Nasty hack
+
+  return store;
+};
 
 export const store = makeStore();
 export const persistor = persistStore(store);

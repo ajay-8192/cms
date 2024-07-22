@@ -1,5 +1,5 @@
-const { TOKEN } = require('../services/token');
-const { TOKEN_CONSTANTS } = require('../constants/tokenConstants');
+const { TOKEN } = require("../services/token");
+const { TOKEN_CONSTANTS } = require("../constants/tokenConstants");
 
 exports.authenticate = async (req, res, next) => {
   const accessToken = req.header(TOKEN_CONSTANTS.AUTHORIZATION);
@@ -8,7 +8,9 @@ exports.authenticate = async (req, res, next) => {
     const refreshToken = req.cookies[TOKEN_CONSTANTS.TOKEN];
 
     if (!refreshToken) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
+      return res
+        .status(401)
+        .json({ message: "No token, authorization denied" });
     }
 
     try {
@@ -21,22 +23,25 @@ exports.authenticate = async (req, res, next) => {
 
       return next();
     } catch (error) {
-      return res.status(401).json({ message: 'Session timeout', redirectUrl: '/login' });
+      return res
+        .status(401)
+        .json({ message: "Session timeout", redirectUrl: "/login" });
     }
   }
 
   try {
-
     const isBlacklisted = await TOKEN.isBlacklisted(accessToken);
 
     if (isBlacklisted) {
-      return res.status(401).json({ message: 'Token is not valid', returnUrl: '/login' });
+      return res
+        .status(401)
+        .json({ message: "Token is not valid", returnUrl: "/login" });
     }
 
     const decoded = TOKEN.verifyAccessToken(accessToken);
     req.user = decoded.user;
     return next();
   } catch (err) {
-    return res.status(401).json({ message: 'Token is not valid' });
+    return res.status(401).json({ message: "Token is not valid" });
   }
 };

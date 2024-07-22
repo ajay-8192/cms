@@ -69,7 +69,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activePath = "/" }) => {
           <div
             className={`font-semibold flex items-center gap-4 p-2 rounded-xl ${activePath === "/profile" ? "text-primary-blue bg-white" : "text-primary-white"}`}
           >
-            <span className="material-icons" style={activePath === "/profile" ? { color: "#1f2d5a" } : {}}>account_circle</span>
+            <span
+              className="material-icons"
+              style={activePath === "/profile" ? { color: "#1f2d5a" } : {}}
+            >
+              account_circle
+            </span>
             <span>Profile</span>
           </div>
         </Link>

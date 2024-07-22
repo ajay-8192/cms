@@ -1,29 +1,46 @@
 import { GetServerSideProps } from "next";
-import { wrapper } from "@/store";
+import { RootState, wrapper } from "@/store";
 import Sidebar from "@/components/Sidebar";
 import ProjectList from "@/components/ProjectList";
 import React from "react";
 import { setUserDetails } from "@/store/userSlice";
 import Content from "@/components/content";
 import { fetchUserDetails } from "@/api/user";
+import { useDispatch, useSelector } from "react-redux";
+import ProfileCard from "@/components/ProfileCard";
+import RecentProjects from "@/components/RecentProjects";
+import ServiceKeyInfo from "@/components/ServiceKeyInfo";
 
 type HomeProps = {
   user: object;
 };
 
 const Home: React.FC<HomeProps> = ({ user }) => {
+  const userDetails = useSelector((state: RootState) => state.user.userDetails);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (!userDetails.email) {
+      console.log("======> 22:HOME");
+      dispatch(setUserDetails({ user }));
+      console.log("======> 24:HOME");
+    }
+  }, [userDetails, user, dispatch]);
+
   return (
     <main className="flex w-full h-screen">
       <Sidebar activePath="/" />
-      <article className="flex w-full justify-between">
-        <div className="w-full overflow-auto scrollbar-hide">
-          <Content />
-          {/* <pre>
-            {JSON.stringify(user, null, 2)}
-          </pre> */}
-        </div>
+      <article className="flex flex-col w-full overflow-auto pb-8">
+        <header className="border-b py-4 pl-12 font-semibold text-xl flex items-center sticky top-0 z-10 bg-primary-white">
+          <span className="material-icons" style={{ color: "#1f2d5a" }}>
+            space_dashboard
+          </span>
+          <div className="ml-3">Dashboard</div>
+        </header>
 
-        <ProjectList />
+        <ProfileCard />
+        <RecentProjects />
+        <ServiceKeyInfo />
       </article>
     </main>
   );
@@ -35,6 +52,8 @@ export const getServerSideProps: GetServerSideProps =
 
     // get User details
     const { userDetails, userLoggedIn } = store.getState().user;
+
+    console.log("======> USER:::HOME", { userDetails, userLoggedIn });
 
     // If user is not logged in
     if (!userLoggedIn) {
@@ -68,7 +87,7 @@ export const getServerSideProps: GetServerSideProps =
         };
       }
     } else {
-      user = { ...userDetails };
+      user = userDetails;
     }
 
     return {

@@ -2,11 +2,21 @@ import Sidebar from "@/components/Sidebar";
 import React from "react";
 import ProfileDashboard from "./_components/ProfileDashboard";
 import { GetServerSideProps } from "next";
-import { wrapper } from "@/store";
+import { RootState, wrapper } from "@/store";
 import { fetchUserDetails } from "@/api/user";
 import { setUserDetails } from "@/store/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Profile = ({ user }: { user: object }) => {
+  const userDetails = useSelector((state: RootState) => state.user.userDetails);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (!userDetails.email) {
+      dispatch(setUserDetails({ user }));
+    }
+  }, [userDetails, user, dispatch]);
+
   return (
     <main className="flex w-full h-screen">
       <Sidebar activePath="/profile" />
@@ -22,6 +32,8 @@ export const getServerSideProps: GetServerSideProps =
     // get User details
     const { userDetails, userLoggedIn } = store.getState().user;
 
+    console.log("====> USER:::PROFILE", { userDetails, userLoggedIn });
+
     // If user is not logged in
     if (!userLoggedIn) {
       try {
@@ -31,7 +43,7 @@ export const getServerSideProps: GetServerSideProps =
 
         const responseObj = await fetchUserDetails(authorization, cookie);
 
-        console.log('====> ', { responseObj });
+        console.log("====> ", { responseObj });
 
         if (!responseObj.isLogin) {
           return {
@@ -42,7 +54,7 @@ export const getServerSideProps: GetServerSideProps =
           };
         }
 
-        console.log('====> ', { responseObj });
+        console.log("====> ", { responseObj });
 
         user = responseObj.userDetails.user;
 
@@ -58,8 +70,10 @@ export const getServerSideProps: GetServerSideProps =
         };
       }
     } else {
-      user = { ...userDetails };
+      user = userDetails;
     }
+
+    console.log("====> user details:::::", { user });
 
     return {
       props: {

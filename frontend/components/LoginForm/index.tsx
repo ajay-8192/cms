@@ -34,7 +34,7 @@ const LoginForm = () => {
     if (responseObj.validObj.isValid && responseObj.userDetails) {
       console.log("=======> Login", { responseObj });
 
-      dispatch(setUserDetails({user: responseObj.userDetails.user}));
+      dispatch(setUserDetails({ user: responseObj.userDetails.user }));
     }
 
     e.stopPropagation();

@@ -1,7 +1,12 @@
 import { LoginTypes, SignupTypes } from "@/types/userTypes";
 import { loginValidate, signupValidate } from "@/validate/userValidate";
 
-export const userLogin = async (data: LoginTypes): Promise<{ userDetails: { user: object }; validObj: { isValid: boolean, errorObj: any } }> => {
+export const userLogin = async (
+  data: LoginTypes,
+): Promise<{
+  userDetails: { user: object };
+  validObj: { isValid: boolean; errorObj: any };
+}> => {
   const validObj = loginValidate(data);
 
   if (!validObj.isValid) return { validObj, userDetails: { user: {} } };
@@ -26,7 +31,7 @@ export const userLogin = async (data: LoginTypes): Promise<{ userDetails: { user
 
     return {
       userDetails: {
-        user: userDetailsJson.user
+        user: userDetailsJson.user,
       },
       validObj,
     };
@@ -37,12 +42,17 @@ export const userLogin = async (data: LoginTypes): Promise<{ userDetails: { user
         ...validObj,
         isValid: false,
       },
-      userDetails: { user: {} }
+      userDetails: { user: {} },
     };
   }
 };
 
-export const userSignup = async (data: SignupTypes): Promise<{ userDetails: { user: object }; validObj: { isValid: boolean, errorObj: any } }> => {
+export const userSignup = async (
+  data: SignupTypes,
+): Promise<{
+  userDetails: { user: object };
+  validObj: { isValid: boolean; errorObj: any };
+}> => {
   const validObj = signupValidate(data);
 
   if (!validObj.isValid) return { validObj, userDetails: { user: {} } };
@@ -67,7 +77,7 @@ export const userSignup = async (data: SignupTypes): Promise<{ userDetails: { us
 
     return {
       userDetails: {
-        user: userDetailsJson.user
+        user: userDetailsJson.user,
       },
       validObj,
     };
@@ -80,7 +90,7 @@ export const userSignup = async (data: SignupTypes): Promise<{ userDetails: { us
       ...validObj,
       isValid: false,
     },
-    userDetails: { user: {} }
+    userDetails: { user: {} },
   };
 };
 
@@ -104,11 +114,11 @@ export const fetchUserDetails = async (
 
     const userDetailsJson = await userDetails.json();
 
-    console.log('====> ', { userDetailsJson });
+    console.log("====> ", { userDetailsJson });
 
     return {
       userDetails: {
-        user: userDetailsJson.user
+        user: userDetailsJson.user,
       },
       isLogin: true,
     };
