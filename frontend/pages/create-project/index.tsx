@@ -1,5 +1,6 @@
 import Sidebar from "@/components/Sidebar";
 import React from "react";
+import ProjectForm from "./_components/ProjectForm";
 
 const CreateProject = () => {
   return (
@@ -12,6 +13,8 @@ const CreateProject = () => {
           </span>
           <div className="ml-3">Create Project</div>
         </header>
+
+        <ProjectForm />
       </article>
     </main>
   );

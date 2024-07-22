@@ -13,9 +13,11 @@ import {
 } from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
+import projectReducer from "./projectSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  project: projectReducer,
 });
 
 const persistConfig = {

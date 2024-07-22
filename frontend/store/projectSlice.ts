@@ -1,17 +1,26 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface SelectedProjectType {
+  name: string;
+  description: string;
+  [key: string]: any;
+};
+
 interface ProjectState {
   projectList: object[];
   recentProjects: object[];
   projectDetails: object[];
-  selectedProject: string | null;
+  selectedProject: SelectedProjectType
 }
 
 const initialState: ProjectState = {
   projectList: [],
   recentProjects: [],
   projectDetails: [],
-  selectedProject: null,
+  selectedProject: {
+    name: '',
+    description: ''
+  },
 };
 
 const projectSlice = createSlice({
@@ -21,7 +30,7 @@ const projectSlice = createSlice({
     setAllProject: (state, action: PayloadAction<object[]>) => {
       state.projectList = [...action.payload];
     },
-    setSelectedProject: (state, action: PayloadAction<string>) => {
+    setSelectedProject: (state, action: PayloadAction<SelectedProjectType>) => {
       state.selectedProject = action.payload;
     },
     setRecentProjects: (state, action: PayloadAction<object[]>) => {
@@ -30,6 +39,6 @@ const projectSlice = createSlice({
   },
 });
 
-export const {} = projectSlice.actions;
+export const { setSelectedProject, setRecentProjects, setAllProject } = projectSlice.actions;
 
 export default projectSlice.reducer;
