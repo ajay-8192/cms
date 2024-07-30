@@ -25,14 +25,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activePath = "/" }) => {
   };
 
   return (
-    <aside className="bg-primary-blue text-primary-white min-w-64 h-full flex flex-col justify-between p-6">
+    <aside className="bg-primary-blue text-primary-white laptop:min-w-64 h-full flex flex-col justify-between p-6">
       <div>
         <Image
           src="/logo-no-background.png"
           alt="Content Management System"
-          width={80}
-          height={48}
-          className="ml-2 mb-12"
+          width={100}
+          height={60}
+          className="ml-2 mb-12 hidden laptop:block"
         />
 
         {SIDEBAR_ITEMS.MAIN.map((item) => {
@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePath = "/" }) => {
                 >
                   {item.icon}
                 </span>
-                <span>{item.name}</span>
+                <span className="hidden laptop:block">{item.name}</span>
               </Link>
             </div>
           );
@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePath = "/" }) => {
           onClick={onLogout}
         >
           <span className="material-icons">logout</span>
-          <span>Log out</span>
+          <span className="hidden laptop:block">Log out</span>
         </div>
 
         <Link href={"/profile"}>
@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePath = "/" }) => {
             >
               account_circle
             </span>
-            <span>Profile</span>
+            <span className="hidden laptop:block">Profile</span>
           </div>
         </Link>
       </div>

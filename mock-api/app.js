@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 // User Routes
-app.use('/api/user', require('./routes/userRoutes'));
+app.use("/api/user", require("./routes/userRoutes"));
 
 // Project Routes
 

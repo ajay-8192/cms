@@ -5,6 +5,7 @@ import { wrapper, store, persistor } from "../store";
 
 import "@/styles/globals.css";
 import Loader from "@/components/Common/Loader";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
@@ -12,6 +13,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate loading={<Loader />} persistor={persistor}>
+        <Head>
+          <title>Content Management System: Ajay</title>
+        </Head>
         <Component {...props} />
       </PersistGate>
     </Provider>

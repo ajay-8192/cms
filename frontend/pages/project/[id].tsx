@@ -4,10 +4,11 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const Project = () => {
+  const project = useSelector(
+    (state: RootState) => state.project.selectedProject,
+  );
 
-  const project = useSelector((state: RootState) => state.project.selectedProject);
-
-  const { name = 'Not exist' } = project;
+  const { name = "Not exist" } = project;
 
   return (
     <main className="flex w-full h-screen">

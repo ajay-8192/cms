@@ -60,11 +60,9 @@ exports.provideAccess = async (req, res) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      res
-        .status(400)
-        .json({
-          message: `User doesnot exist! Create user with email ${email}`,
-        });
+      res.status(400).json({
+        message: `User doesnot exist! Create user with email ${email}`,
+      });
     }
 
     const projectRole = { projectId, userId: user.userId, role };
