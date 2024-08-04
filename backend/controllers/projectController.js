@@ -1,4 +1,5 @@
 const { ROLE_TYPES } = require("../constants/roleConstants");
+const Content = require("../models/content");
 const Project = require("../models/project");
 const ProjectRole = require("../models/projectRole");
 const User = require("../models/user");
@@ -52,6 +53,40 @@ exports.fetchProjects = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.fetchProjectById = async (req, res) =>{
+  try {
+    const projectId = req.params.id;
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Check if the user has access to the project
+    const userHasAccess = project.owner.toString() === req.user.id || 
+                          await ProjectRole.exists({ projectId: projectId, userId: req.user.id });
+
+    if (!userHasAccess) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    const contents = await Content.find({ projectId: projectId });
+
+    project.contents = contents;
+
+    console.log('=======> ', { project, contents });
+
+    res.status(200).json({
+      project,
+      contents,
+      settings: [],
+      message: "Project fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 exports.provideAccess = async (req, res) => {
   try {

@@ -18,10 +18,11 @@ router.post("/create", authenticate, ProjectController.createNewProject);
 // Update settings
 router.post("/settings", authenticate, ProjectController.editProjectSettings);
 
+// Fetch selected Project user
+router.get("/:id", authenticate, ProjectController.fetchProjectById);
+
 // Publish Project
 
 // Delete project
-
-//
 
 module.exports = router;

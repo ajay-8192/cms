@@ -1,17 +1,17 @@
 import React from "react";
-import Item from "./Item";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setSelectedProject } from "@/store/projectSlice";
 import { ProjectType, SelectedProjectType } from "@/types/projectTypes";
 import { RootState } from "@/store";
+import { fetchProjectById } from "@/api/project";
 
 const ProjectItems = ({ projects }: { projects: ProjectType[] }) => {
   console.log("=====> projects", { projects });
 
   const dispatch = useDispatch();
 
-  const handleSelectProject = (project: SelectedProjectType) => {
+  const handleSelectProject = async (project: SelectedProjectType) => {    
     dispatch(setSelectedProject(project));
   };
 
