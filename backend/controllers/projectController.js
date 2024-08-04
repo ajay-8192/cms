@@ -54,7 +54,7 @@ exports.fetchProjects = async (req, res) => {
   }
 };
 
-exports.fetchProjectById = async (req, res) =>{
+exports.fetchProjectById = async (req, res) => {
   try {
     const projectId = req.params.id;
 
@@ -65,8 +65,9 @@ exports.fetchProjectById = async (req, res) =>{
     }
 
     // Check if the user has access to the project
-    const userHasAccess = project.owner.toString() === req.user.id || 
-                          await ProjectRole.exists({ projectId: projectId, userId: req.user.id });
+    const userHasAccess =
+      project.owner.toString() === req.user.id ||
+      (await ProjectRole.exists({ projectId: projectId, userId: req.user.id }));
 
     if (!userHasAccess) {
       return res.status(403).json({ message: "Access denied" });
@@ -75,7 +76,7 @@ exports.fetchProjectById = async (req, res) =>{
 
     project.contents = contents;
 
-    console.log('=======> ', { project, contents });
+    console.log("=======> ", { project, contents });
 
     res.status(200).json({
       project,
@@ -86,7 +87,7 @@ exports.fetchProjectById = async (req, res) =>{
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 exports.provideAccess = async (req, res) => {
   try {

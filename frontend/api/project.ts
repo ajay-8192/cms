@@ -79,7 +79,6 @@ export const fetchProjectById = async (
   const URL = `${process.env.API_HOST || "http://localhost:5000/api"}/project/${id}`;
 
   try {
-    
     const projectDetails = await fetch(URL, {
       method: "GET",
       headers: {
@@ -103,14 +102,13 @@ export const fetchProjectById = async (
       settings: projectListJson.settings,
       isError: false,
     };
-
   } catch (error) {
     console.error("Error:", error);
     return {
       project: {},
       content: [],
       settings: [],
-      isError: true
-    }
+      isError: true,
+    };
   }
-}
+};

@@ -11,7 +11,7 @@ const ProjectItems = ({ projects }: { projects: ProjectType[] }) => {
 
   const dispatch = useDispatch();
 
-  const handleSelectProject = async (project: SelectedProjectType) => {    
+  const handleSelectProject = async (project: SelectedProjectType) => {
     dispatch(setSelectedProject(project));
   };
 

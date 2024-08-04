@@ -17,21 +17,23 @@ const Project = () => {
   const { name = "Not exist" } = project;
 
   const dispatch = useDispatch();
-  const { query: { id } } = useRouter();
+  const {
+    query: { id },
+  } = useRouter();
 
   useEffect(() => {
     const fetchProject = async () => {
       const responseObj = await fetchProjectById(id);
-  
+
       if (!responseObj.isError) {
         const projectDetails = {
           ...responseObj.project,
           content: responseObj.content,
-          settings: responseObj.settings
-        }
+          settings: responseObj.settings,
+        };
         dispatch(setSelectedProject(projectDetails));
       }
-    }
+    };
 
     fetchProject();
   }, []);
@@ -51,7 +53,6 @@ const Project = () => {
     </main>
   );
 };
-
 
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((store) => async (context) => {
