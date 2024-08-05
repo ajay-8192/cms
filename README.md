@@ -9,7 +9,6 @@ The frontend project of our application is responsible for the user interface an
 ### Technologies Used
 
 - React: A popular Javascript library for building user interfaces.
-  
 - Next.js: A React framework for server-rendered applications.
 
 - Tailwind CSS: A utility-first CSS framework for styling components.

@@ -1,28 +1,40 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { SelectedProjectType } from "@/types/projectTypes";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ProjectState {
-  projectList: object[],
-  selectedProject: string | null
-};
+  projectList: object[];
+  recentProjects: object[];
+  projectDetails: object[];
+  selectedProject: SelectedProjectType;
+}
 
 const initialState: ProjectState = {
   projectList: [],
-  selectedProject: null,
+  recentProjects: [],
+  projectDetails: [],
+  selectedProject: {
+    name: "",
+    description: "",
+  },
 };
 
 const projectSlice = createSlice({
-  name: 'project',
+  name: "project",
   initialState,
   reducers: {
     setAllProject: (state, action: PayloadAction<object[]>) => {
-      state.projectList = [ ...action.payload ];
+      state.projectList = [...action.payload];
     },
-    setSelectedProject: (state, action: PayloadAction<string>) => {
+    setSelectedProject: (state, action: PayloadAction<SelectedProjectType>) => {
       state.selectedProject = action.payload;
-    }
-  }
+    },
+    setRecentProjects: (state, action: PayloadAction<object[]>) => {
+      state.recentProjects = action.payload;
+    },
+  },
 });
 
-export const {} = projectSlice.actions;
+export const { setSelectedProject, setRecentProjects, setAllProject } =
+  projectSlice.actions;
 
 export default projectSlice.reducer;

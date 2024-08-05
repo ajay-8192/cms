@@ -1,104 +1,100 @@
-import { GetServerSideProps } from 'next';
-import { wrapper } from '@/store';
-import Image from 'next/image';
-import LogoutButton from '@/components/LogoutButton';
-import Sidebar from '@/components/Sidebar';
-import ProjectList from '@/components/ProjectList';
-import React from 'react';
-import { setUserDetails } from '@/store/userSlice';
-import Content from '@/components/content';
+import { GetServerSideProps } from "next";
+import { RootState, wrapper } from "@/store";
+import Sidebar from "@/components/Sidebar";
+import ProjectList from "@/components/ProjectList";
+import React from "react";
+import { setUserDetails } from "@/store/userSlice";
+import Content from "@/components/content";
+import { fetchUserDetails } from "@/api/user";
+import { useDispatch, useSelector } from "react-redux";
+import ProfileCard from "@/components/ProfileCard";
+import RecentProjects from "@/components/RecentProjects";
+import ServiceKeyInfo from "@/components/ServiceKeyInfo";
 
 type HomeProps = {
-  user: object
+  user: object;
 };
 
 const Home: React.FC<HomeProps> = ({ user }) => {
-  return (
-    <div>
-      <header className="flex items-center justify-between px-20 h-16 shadow-xl w-full">
-        <Image src="/logo-color.png" height={108} width={108} alt="Logo" fetchPriority='high' className='rounded-full p-4' />
-        <div className="font-bold text-3xl text-primary-blue">Content Management System</div>
-        <LogoutButton />
-      </header>
-      <main className="flex w-full h-[calc(100vh-108px)]">
-        <Sidebar />
-        <article className="flex w-full justify-between">
-          <div className='w-full overflow-auto scrollbar-hide'>
-            <Content />
-            {/* <pre>
-              {JSON.stringify(user, null, 2)}
-            </pre> */}
-          </div>
+  const userDetails = useSelector((state: RootState) => state.user.userDetails);
+  const dispatch = useDispatch();
 
-          <ProjectList />
-        </article>
-      </main>
-    </div>
+  React.useEffect(() => {
+    if (!userDetails.email) {
+      console.log("======> 22:HOME");
+      dispatch(setUserDetails({ user }));
+      console.log("======> 24:HOME");
+    }
+  }, [userDetails, user, dispatch]);
+
+  return (
+    <main className="flex w-full h-screen">
+      <Sidebar activePath="/" />
+      <article className="flex flex-col w-full overflow-auto pb-8">
+        <header className="border-b py-4 pl-12 font-semibold text-xl flex items-center sticky top-0 z-10 bg-primary-white">
+          <span className="material-icons" style={{ color: "#1f2d5a" }}>
+            space_dashboard
+          </span>
+          <div className="ml-3">Dashboard</div>
+        </header>
+
+        <ProfileCard />
+        <RecentProjects />
+        <ServiceKeyInfo />
+      </article>
+    </main>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
-  (store) => async (context) => {
-
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps((store) => async (context) => {
     let user = {};
 
     // get User details
     const { userDetails, userLoggedIn } = store.getState().user;
 
+    console.log("======> USER:::HOME", { userDetails, userLoggedIn });
+
     // If user is not logged in
     if (!userLoggedIn) {
       try {
         const { req } = context;
-        
-        const response = await fetch('http://localhost:5000/api/user/details', {
-          headers: {
-            'Authorizarion': req.headers.authorization || '',
-            'Cookie': req.headers.cookie || ''
-          },
-          credentials: 'include'
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          
-          user = {
-            ...data
-          }
-          store.dispatch(setUserDetails({ ...data }));
-        } else {
-          console.log('==========> API error');
-          
+
+        const { authorization, cookie } = req.headers;
+
+        const responseObj = await fetchUserDetails(authorization, cookie);
+
+        if (!responseObj.isLogin) {
           return {
             redirect: {
               permanent: false,
-              destination: '/login'
-            }
-          }
+              destination: "/login",
+            },
+          };
         }
-  
+
+        user = responseObj.userDetails.user;
+
+        store.dispatch(setUserDetails({ user }));
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
 
         return {
           redirect: {
             permanent: false,
-            destination: '/login'
-          }
-        }
+            destination: "/login",
+          },
+        };
       }
-
     } else {
-      user = { ...userDetails }
+      user = userDetails;
     }
-    
-    // store.dispatch(removeUserDetails());
 
     return {
       props: {
-        user
+        user,
       },
     };
-  }
-);
+  });
 
 export default Home;
