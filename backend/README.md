@@ -4,6 +4,10 @@
 
 ### BE local setup
 
+Make sure that local redis server is up and running
+
+Do it by installing redis and then in linux running the command <code>sudo service redis-server start</code>
+
 1. NVM install
 2. Node version 22.2.0
 3. Install packages
