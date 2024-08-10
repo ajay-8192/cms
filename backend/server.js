@@ -8,7 +8,7 @@ const cors = require("cors");
 
 const args = process.argv.slice(2);
 
-const isLocal = args.includes("--local");
+const isLocal = args.includes("--local") || args.includes("-l");
 
 console.log("=============> ", { isLocal });
 

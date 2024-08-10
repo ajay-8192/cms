@@ -2,13 +2,6 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/user");
 
-const {
-  DAYS_IN_WEEK,
-  HOURS_IN_DAY,
-  MINUTES_IN_HOUR,
-  SECONDS_IN_MINUTE,
-} = require("../constants/timeConstants");
-
 const { TOKEN } = require("../services/token");
 const { TOKEN_CONSTANTS } = require("../constants/tokenConstants");
 const { redisClient } = require("../config/redis");
@@ -70,7 +63,7 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }, { password: 0 });
 
     if (!user) {
       return res
@@ -107,7 +100,7 @@ exports.loginUser = async (req, res) => {
 // Get User Details
 exports.getUserDetails = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id, { password: 0 });
 
     if (!user) {
       return res
@@ -115,7 +108,7 @@ exports.getUserDetails = async (req, res) => {
         .json({ message: "User not found", returnUrl: "/signup" });
     }
 
-    const { password: _, ...userDetails } = user.toObject();
+    const userDetails = user.toObject();
 
     res.json({ user: userDetails });
   } catch (error) {
@@ -126,7 +119,7 @@ exports.getUserDetails = async (req, res) => {
 // Logout User
 exports.logoutUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id, { password: 0 });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -181,7 +174,7 @@ exports.updateUserDetails = async (req, res) => {
 
 exports.deleteUserDetails = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id, { password: 0 });
 
     if (!user) {
       return res
