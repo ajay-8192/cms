@@ -37,6 +37,24 @@ const Project = () => {
     
     fetchProject();
   }, []);
+
+  /*
+  {
+  "contents": [
+    {
+      "name": "0123", - 
+      "createdUser": "er", - 
+      "lastModifiedUser": "arwet", - 
+      "createdAt": "<DateFormet>",
+      "modifiedAt": "<DateFormet>", -
+      "status": "Draft", - 
+      "version": "<number>",
+      "data": {
+        "<key>": "<Value>",
+      },
+    },
+  ],
+}*/
   
   return (
     <main className="flex w-full h-screen">
@@ -48,8 +66,36 @@ const Project = () => {
         </span>
         <div className="ml-3">{name}</div>
         </header>
-        {/* TODO = loop over project.contents instead of project*/}
+
         <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Created User</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Last Modified User</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Modified At</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {(project.contents || []).map((content:any, index: any) =>{
+              return (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap hover:underline">{content.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{content.createdUser}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{content.lastModifiedUser}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{content.modifiedAt}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{content.status}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+
+        {/* this is for data display */}
+        {/* TODO = loop over project.contents instead of project*/}
+        {/* <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Key</th>
@@ -57,13 +103,12 @@ const Project = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-          {
-            Object.keys(project).map((key: any, index:number) =>{
-              if(project[key] != ""){
-              return (
-                <tr key={index}>
+            {Object.keys(project.contents || []).map((key:any, index:any) =>{
+              if(key !== "data"){
+                return (
+                  <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap hover:underline">{key}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{project[key]}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">{project.contents[key]}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="material-icons" style={{ color: "#1f2d5a" }}>edit</span>
                   </td>
@@ -71,11 +116,12 @@ const Project = () => {
                   <span className="material-icons" style={{ color: "#1f2d5a" }}>delete</span>
                   </td>
                 </tr>
-              )}
-            })
-          }
+                );
+              }
+            })}
           </tbody>
-        </table>
+        </table> */}
+        {/* TODO = loop over project.contents instead of project*/}
         <button className="w-40 h-30 pt-3 shadow-md cursor-pointer">Add New</button>
       </article>
     </main>
