@@ -1,86 +1,46 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Input from '@/components/Input';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useSelector } from "react-redux";
+import LoginForm from "@/components/LoginForm";
+import { RootState } from "@/store";
+import { ToasterProvider } from "@/context/ToasterContext";
 
 type LoginProps = {};
 
-const Login:React.FC<LoginProps> = () => {
-
-  const [loginDetails, setLoginDetails] = useState({ email: null, password: null });
-
+const Login: React.FC<LoginProps> = () => {
   const user = useSelector((state: RootState) => state.user);
 
   const router = useRouter();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-
-    const { value, name } = e.target;
-
-    setLoginDetails({
-      ...loginDetails,
-      [name]: value
-    });
-  };
-
   useEffect(() => {
-    console.log('USER', user);
-    
-    if (user.userLoggedIn) {
-      router.push('/');
+    console.log("USER", user);
+
+    if (user.userLoggedIn && Object.keys(user.userDetails).length) {
+      console.log("=======> ");
+      router.push("/");
     }
   }, [user, router]);
 
-  const handleLogin = (e: any) => {
-
-    e.preventDefault();
-
-    const { email, password } = loginDetails;
-
-    if (email && password) {
-      fetch('http://localhost:5000/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'
-      })
-        .then(response => {
-          if (response.ok) {
-            router.push('/');
-          } else {
-            throw new Error('Error while login');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-  };
-
-  const handleSignup = () => {
-    router.push('/signup');
-  };
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form className='flex flex-col justify-center items-center w-2/4'>
+    <ToasterProvider>
+      <div className="p-8 min-h-screen">
+        <main className="flex w-full min-h-[calc(100vh-64px)] text-primary-blue shadow-xl rounded-2xl overflow-hidden">
+          <LoginForm />
 
-        <label className='w-full'>Email:</label>
-        <Input type='email' onChange={handleChange} name='email' classes='w-full mt-3 text-black' />
-
-        <label className='w-full mt-6'>Password:</label>
-        <Input type='password' onChange={handleChange} name='password' classes='w-full mt-3 text-black' />
-
-        <button onClick={handleLogin} className='mt-6 px-4 py-2 bg-white text-black'>Login</button>
-        
-      </form>
-      <button onClick={handleSignup} className='px-4 py-2 bg-white text-black'>Sign up</button>
-    </main>
-  )
-}
+          <div className="block w-1/2 relative">
+            <Image
+              src={"/login.jpg"}
+              alt="Login"
+              className="w-full h-full"
+              objectFit="cover"
+              fill
+            />
+          </div>
+        </main>
+      </div>
+    </ToasterProvider>
+  );
+};
 
 export default Login;

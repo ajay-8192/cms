@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const contentController = require('../controllers/contentController');
-const { authenticate } = require('../middleware/auth');
+const contentController = require("../controllers/contentController");
+const { authenticate } = require("../middleware/auth");
 
 // router.get('/', contentController.getAllContent);
 // router.get('/:id', contentController.getContentById);
