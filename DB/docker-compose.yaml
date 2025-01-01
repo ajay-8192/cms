@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mysql:
+    build:
+      context: ./MySQL
+      dockerfile: Dockerfile
+    container_name: mysql-container
+    ports:
+      - "3306:3306" # Map MySQL to localhost:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: Password@123
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: Password@123
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mongodb:
+    build:
+      context: ./MongoDB
+      dockerfile: Dockerfile
+    container_name: mongodb-container
+    ports:
+      - "27017:27017" # Map MongoDB to localhost:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mysql_data:
+  mongo_data:
