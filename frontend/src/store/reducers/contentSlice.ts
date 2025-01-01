@@ -9,12 +9,14 @@ type ContentType = {
 
 type ContentSliceTypes = {
     contentId?: string;
+    contentName: string;
     content: ContentType[];
 };
 
 const initialState: ContentSliceTypes = {
     contentId: "",
-    content: []
+    content: [],
+    contentName: ""
 };
 
 const contentSlice = createSlice({
@@ -30,6 +32,9 @@ const contentSlice = createSlice({
         addContent: (state, action) => {
             state.content.push(action.payload);
         },
+        setContentName: (state, action) => {
+            state.contentName = action.payload;
+        }
     }
 });
 
@@ -37,5 +42,6 @@ export default contentSlice.reducer;
 export const {
     setContentId,
     setContent,
-    addContent
+    addContent,
+    setContentName
 } = contentSlice.actions;
