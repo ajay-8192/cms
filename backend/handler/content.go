@@ -3,6 +3,7 @@ package handler
 import (
 	"cms/database"
 	"cms/models"
+	"cms/queries"
 	"context"
 	"fmt"
 	"log"
@@ -18,7 +19,7 @@ func GetContentsByProjectId(c *gin.Context) {
 	fmt.Println("Project ID: ", projectId)
 
 	var contents []map[string]interface{}
-	cursor, err := database.MDB.Database("cms").Collection("contents").Find(context.TODO(), map[string]interface{}{"projectId": projectId})
+	cursor, err := queries.FetchContentByProjectId(projectId, "")
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -86,7 +87,7 @@ func CreateContentForProject(c *gin.Context) {
 		Data:             contentData,
 	}
 
-	_, err = database.MDB.Database("cms").Collection("contents").InsertOne(context.TODO(), content)
+	_, err = queries.CreateContent(content)
 	if err != nil {
 		log.Printf("Error parsing UUID: %v\n", err)
 		c.JSON(400, gin.H{
