@@ -70,9 +70,9 @@ func CreateContentForProject(c *gin.Context) {
 
 	data["projectId"] = projectId
 
-	name := data["name"].(string)
+	name := data["contentname"].(string)
 
-	contentData := data["data"].(map[string]interface{})
+	contentData := data["contents"].(map[string]interface{})
 
 	content := models.Content{
 		Id:               uuid.New(),
