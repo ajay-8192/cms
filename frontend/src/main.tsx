@@ -8,6 +8,7 @@ import AuthLayout from './layouts/AuthLayout'
 import { Provider } from 'react-redux'
 import { store } from './store/store'
 import NewContentPage from './pages/NewContentPage'
+import ContentPage from './pages/ContentPage'
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
@@ -66,6 +67,14 @@ createRoot(document.getElementById('root')!).render(
               element={
                 <Suspense fallback={<Loading />}>
                   <NewContentPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path='project/:projectId/content/:contentId'
+              element={
+                <Suspense fallback={<Loading />}>
+                  <ContentPage />
                 </Suspense>
               }
             />
