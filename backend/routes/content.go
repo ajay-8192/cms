@@ -2,6 +2,7 @@ package routes
 
 import (
 	"cms/handler"
+	"cms/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,7 +10,7 @@ import (
 func getContentRoutes(router *gin.Engine) {
 	contentRoutes := router.Group("/content")
 	{
-		contentRoutes.GET("/:projectId", handler.GetContentsByProjectId)
-		contentRoutes.POST("/:projectId/create", handler.CreateContentForProject)
+		contentRoutes.GET("/:projectId", middleware.Authenticate, handler.GetContentsByProjectId)
+		contentRoutes.POST("/:projectId/create", middleware.Authenticate, handler.CreateContentForProject)
 	}
 }
