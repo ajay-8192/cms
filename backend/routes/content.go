@@ -12,5 +12,6 @@ func getContentRoutes(router *gin.Engine) {
 	{
 		contentRoutes.GET("/:projectId", middleware.Authenticate, handler.GetContentsByProjectId)
 		contentRoutes.POST("/:projectId/create", middleware.Authenticate, handler.CreateContentForProject)
+		contentRoutes.GET("/:projectId/:contentId", middleware.Authenticate, handler.GetContentDetails)
 	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"cms/config"
 	"cms/database"
+	"cms/queries"
 	"cms/routes"
 	"log"
 
@@ -20,6 +21,12 @@ func main() {
 	if err := database.Connect(config); err != nil {
 		log.Fatalf("Could not connect to the database: %v", err)
 	}
+
+	if err := database.ConnectMongoDB(config); err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+
+	queries.InitMongoCollection()
 
 	database.ConnectRedis(config)
 

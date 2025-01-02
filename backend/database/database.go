@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -38,14 +39,25 @@ func Connect(config *config.Config) error {
 
 	log.Println("MySql connected successfully")
 
-	uri := "mongodb://localhost:27017/cms"
+	log.Println("Database connected successfully")
+	return nil
+}
+
+func ConnectMongoDB(config *config.Config) error {
+	uri := config.MONGOURL
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
+	bsonOpts := &options.BSONOptions {
+		UseJSONStructTags: true,
+		NilSliceAsEmpty: true,
+	}
+	
+	opts := options.Client().ApplyURI(uri).SetConnectTimeout(30 * time.Second).SetBSONOptions(bsonOpts).SetServerAPIOptions(serverAPI)
 
-	MDB, err := mongo.Connect(context.TODO(), opts)
+	var err error
+	MDB, err = mongo.Connect(context.TODO(), opts)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer func() {
 		if err = MDB.Disconnect(context.TODO()); err != nil {
@@ -55,11 +67,10 @@ func Connect(config *config.Config) error {
 
 	var result bson.M
 	if err := MDB.Database("cms").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
-		panic(err)
+		return err
 	}
 
 	log.Println("MongoDB connected successfully")
 
-	log.Println("Database connected successfully")
 	return nil
 }

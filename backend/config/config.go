@@ -12,8 +12,11 @@ type Config struct {
 	DBUser     string
 	DBPassword string
 	DBName     string
+
 	REDISHost  string
 	REDISPort  string
+
+	MONGOURL  string
 }
 
 func LoadConfig() (*Config, error) {
@@ -29,5 +32,6 @@ func LoadConfig() (*Config, error) {
 		DBName    : os.Getenv("DB_NAME"),
 		REDISHost : os.Getenv("REDIS_HOST"),
 		REDISPort : os.Getenv("REDIS_PORT"),
+		MONGOURL : os.Getenv("MONGO_URL"),
 	}, nil
 }
