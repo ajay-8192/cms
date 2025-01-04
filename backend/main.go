@@ -28,6 +28,8 @@ func main() {
 
 	queries.InitMongoCollection()
 
+	defer database.CloseMongoDB()
+
 	database.ConnectRedis(config)
 
 	router := gin.Default();

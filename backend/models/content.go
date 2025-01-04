@@ -17,7 +17,7 @@ const (
 
 // Content represents the main content document
 type Content struct {
-	ID               uuid.UUID              `bson:"_id,omitempty" json:"id"` // MongoDB's ObjectID as primary key
+	Id               uuid.UUID              `bson:"id" json:"id"`
 	VersionID        uint64                 `bson:"versionId" json:"versionId"`
 	Name             string                 `bson:"name" json:"name"`
 	CreatedUser      uuid.UUID              `bson:"createdUser" json:"createdUser"`

@@ -24,22 +24,25 @@ func FetchContentByProjectId(projectId string, projections string) (*mongo.Curso
 }
 
 func CreateContent(content models.Content) (*mongo.InsertOneResult, error) {
+    if contentsCollection == nil {
+        return nil, fmt.Errorf("contentsCollection is not initialized. Did you call InitContentsCollection?")
+    }
 
-	if contentsCollection == nil {
-		return nil, fmt.Errorf("contentsCollection is not initialized. Did you call InitContentsCollection?")
-	}
+    ct, cancel := context.WithTimeout(context.Background(), 10*time.Second) // Adjusted timeout
+    defer cancel()
 
-	ct, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
-	defer cancel()
+    // Check if the client is connected
+    if err := contentsCollection.Database().Client().Ping(ct, nil); err != nil {
+        return nil, fmt.Errorf("MongoDB client is disconnected: %w", err)
+    }
 
-	result, err := contentsCollection.InsertOne(ct, content)
-	if err != nil {
-		return nil, fmt.Errorf("failed to insert content: %w", err)
-	}
+    result, err := contentsCollection.InsertOne(ct, content)
+    if err != nil {
+        return nil, fmt.Errorf("failed to insert content: %w", err)
+    }
 
-	fmt.Printf("result: %+v\n", content)
-
-	return result, nil
+    fmt.Printf("Inserted content: %+v\n", content)
+    return result, nil
 }
 
 func UpdateContent(contentId string, content models.Content) (*mongo.UpdateResult, error) {
@@ -50,6 +53,6 @@ func DeleteContent(contentId string) (*mongo.DeleteResult, error) {
 	return contentsCollection.DeleteOne(context.TODO(), map[string]interface{}{"id": contentId})
 }
 
-func FetchContentById(contentId string, projections string, content *models.Content) (*mongo.SingleResult, error) {
-	return contentsCollection.FindOne(context.TODO(), map[string]interface{}{"id": contentId}), nil
+func FetchContentById(contentId string, projections string, content *models.Content) *mongo.SingleResult {
+	return contentsCollection.FindOne(context.TODO(), map[string]interface{}{"id": contentId})
 }

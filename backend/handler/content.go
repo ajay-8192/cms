@@ -105,7 +105,7 @@ func CreateContentForProject(c *gin.Context) {
 
 	// Create Content object
 	content := models.Content{
-		ID:               uuid.New(),
+		Id:               uuid.New(),
 		VersionID:        1,
 		Name:             name,
 		CreatedUser:      userId,
@@ -116,8 +116,6 @@ func CreateContentForProject(c *gin.Context) {
 		Status:           models.DraftStatus,
 		Data:             contents,
 	}
-
-	// _, err = contentsCollection.InsertOne(context.TODO(), content)
 
 	// Save content in MongoDB
 	_, err = queries.CreateContent(content)
@@ -195,13 +193,9 @@ func GetContentDetails(c *gin.Context) {
 	contentId := c.Param("contentId")
 
 	var content models.Content
-	result, err := queries.FetchContentById(contentId, "", &content)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
+	result := queries.FetchContentById(contentId, "", &content)
 
-	err = result.Decode(&content)
+	err := result.Decode(&content)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
