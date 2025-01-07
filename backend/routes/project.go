@@ -15,7 +15,7 @@ func getProjectRoutes(router *gin.Engine) {
 	{
 		projectRoutes.POST("/create", middleware.Authenticate, handler.CreateProject)
 
-		projectRoutes.GET("/", middleware.Authenticate, handler.GetProjectsByUserId)
+		projectRoutes.GET("", middleware.Authenticate, handler.GetProjectsByUserId)
 		projectRoutes.GET("/:id", middleware.Authenticate, handler.GetProjectDetails)
 
 		projectRoutes.POST("/:id", middleware.Authenticate, handler.UpdateProjectDetails)

@@ -20,9 +20,9 @@ type Content struct {
 	Id               uuid.UUID              `bson:"id" json:"id"`
 	VersionID        uint64                 `bson:"versionId" json:"versionId"`
 	Name             string                 `bson:"name" json:"name"`
-	CreatedUser      uuid.UUID              `bson:"createdUser" json:"createdUser"`
-	LastModifiedUser uuid.UUID              `bson:"lastModifiedUser" json:"lastModifiedUser"`
-	ProjectID        uuid.UUID              `bson:"projectId" json:"projectId"`
+	CreatedUser      string                 `bson:"createdUser" json:"createdUser"`
+	LastModifiedUser string                 `bson:"lastModifiedUser" json:"lastModifiedUser"`
+	ProjectID        string                 `bson:"projectId" json:"projectId"`
 	CreatedAt        time.Time              `bson:"createdAt" json:"createdAt"`
 	UpdatedAt        time.Time              `bson:"updatedAt" json:"updatedAt"`
 	Status           StatusEnum             `bson:"status" json:"status"`

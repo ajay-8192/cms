@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -20,7 +21,7 @@ func InitMongoCollection() {
 }
 
 func FetchContentByProjectId(projectId string, projections string) (*mongo.Cursor, error) {
-	return contentsCollection.Find(context.TODO(), map[string]interface{}{"projectId": projectId})
+	return contentsCollection.Find(context.TODO(), bson.M{"projectId": projectId})
 }
 
 func CreateContent(content models.Content) (*mongo.InsertOneResult, error) {

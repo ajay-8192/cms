@@ -18,8 +18,6 @@ import (
 func GetContentsByProjectId(c *gin.Context) {
 	projectId := c.Param("projectId")
 
-	fmt.Println("Project ID: ", projectId)
-
 	var contents []map[string]interface{}
 	cursor, err := queries.FetchContentByProjectId(projectId, "")
 	if err != nil {
@@ -35,7 +33,7 @@ func GetContentsByProjectId(c *gin.Context) {
 		"message": "Get contents by project ID",
 		"data": map[string]interface{}{
 			"projectId": projectId,
-			"content":   contents,
+			"contents":   contents,
 		},
 	})
 }
@@ -108,9 +106,9 @@ func CreateContentForProject(c *gin.Context) {
 		Id:               uuid.New(),
 		VersionID:        1,
 		Name:             name,
-		CreatedUser:      userId,
-		LastModifiedUser: userId,
-		ProjectID:        projectId,
+		CreatedUser:      userId.String(),
+		LastModifiedUser: userId.String(),
+		ProjectID:        projectId.String(),
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 		Status:           models.DraftStatus,

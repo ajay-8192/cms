@@ -31,6 +31,7 @@ type Project struct {
 	Description 	string 			`json:"description"`
 	CreatedBy   	uuid.UUID 		`json:"createdBy" gorm:"type:char(36);"`
 	User        	*User			`json:"-" gorm:"foreignKey:CreatedBy;references:Id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Status          StatusEnum		`json:"status" gorm:"type:enum('Draft','Published','Archived');not null;default:Draft"`
 	CreatedAt		time.Time		`json:"createdAt"`
 	UpdateAt		time.Time		`json:"updatedAt"`
 	PublishedAt		*time.Time		`json:"publishedAt"`

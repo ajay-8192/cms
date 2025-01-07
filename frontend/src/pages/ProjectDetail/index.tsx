@@ -1,13 +1,17 @@
-import { useParams } from "react-router";
-import PageHeader from "../../components/Common/PageHeader";
 import { useEffect } from "react";
-import { fetchProjectDetails } from "../../services/projectService";
-import { setProject } from "../../store/reducers/projectSlice";
+import { useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import ProjectDetailSection from "../../components/ProjectDetails";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+
+import PageHeader from "../../components/Common/PageHeader";
+import ProjectDetailSection from "../../components/ProjectDetails";
 import ContentList from "../../components/ContentList";
+
+import { fetchProjectDetails } from "../../services/projectService";
+
+import { setContentInProject, setProject } from "../../store/reducers/projectSlice";
+import { RootState } from "../../store/store";
+import { fetchContentsByProjectId } from "../../services/contentService";
 
 const ProjectDetail = () => {
 
@@ -23,9 +27,21 @@ const ProjectDetail = () => {
         console.log("Error fetching project details:", error);
     };
 
+    const onContentSuccess = (data: any) => {
+        dispatch(setContentInProject(data));
+    }
+
+    const onContentFailure = (error: any) => {
+        console.log('====> ', { error });
+    }
+
     useEffect(() => {
         if (projectId) {
             fetchProjectDetails({ projectId }, { onSuccess, onError });
+            fetchContentsByProjectId(projectId, {
+                onSuccess: onContentSuccess,
+                onError: onContentFailure
+            });
         }
     }, [projectId]);
 

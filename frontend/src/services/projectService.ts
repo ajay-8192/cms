@@ -48,3 +48,17 @@ export const updateProjectDetails = async (projectId: string, payload: { title: 
         console.log("Error updating data:", error);
     }
 }
+
+export const fetchAllProjectLists = async (sideEffects: SideEffectsProps = defaultSideEffects) => {
+    const { onSuccess, onError } = sideEffects;
+
+    const url = BASE_URL + `project`;
+    try {
+        const result = await fetchData(url);
+        console.log("Post response:", result);
+        onSuccess?.(result?.projects);
+    } catch (error) {
+        onError?.(error);
+        console.log("Error posting data:", error);
+    }
+}

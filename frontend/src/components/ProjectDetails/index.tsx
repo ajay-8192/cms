@@ -27,6 +27,7 @@ const ProjectDetailSection = () => {
 
     const onSuccess = (data: any) => {
         dispatch(setProject(data));
+        setIsEditing(false);
     }
 
     const onError = (error: any) => {

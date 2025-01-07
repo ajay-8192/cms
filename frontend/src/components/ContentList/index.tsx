@@ -14,6 +14,8 @@ const ContentList: React.FC<ContentListProps> = () => {
         navigate(`/project/${projectId}/content/new`);
     }
 
+    
+
     if (contents.length === 0) {
         return (
             <div>

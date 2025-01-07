@@ -1,9 +1,9 @@
-import { BASE_URL, postData } from "../utils/api";
+import { BASE_URL, fetchData, postData } from "../utils/api";
 import { defaultSideEffects } from "../utils/helper";
 import { SideEffectsProps } from "./userServices";
 
 export const createContent = async (payload: { data: any, projectId: string }, sideEffects: SideEffectsProps = defaultSideEffects) => {
-    const url = BASE_URL + `content/${payload.projectId}/create`;
+    const url = BASE_URL + `content/project/${payload.projectId}/create`;
 
     const { onSuccess, onError } = sideEffects;
 
@@ -11,6 +11,22 @@ export const createContent = async (payload: { data: any, projectId: string }, s
         const result = await postData(url, payload.data);
         console.log("Post response:", result);
         onSuccess?.(result?.content);
+    } catch (error) {
+        onError?.(error);
+        console.log("Error posting data:", error);
+    }
+}
+
+export const fetchContentsByProjectId = async (projectId: string, sideEffects: SideEffectsProps = defaultSideEffects) => {
+
+    const { onSuccess, onError } = sideEffects;
+
+    const url = BASE_URL + `content/project/${projectId}`
+
+    try {
+        const result = await fetchData(url);
+        console.log("Post response:", result);
+        onSuccess?.(result?.data?.contents);
     } catch (error) {
         onError?.(error);
         console.log("Error posting data:", error);

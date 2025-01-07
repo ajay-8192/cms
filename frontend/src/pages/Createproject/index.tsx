@@ -72,7 +72,7 @@ const CreateProject = () => {
                                 type="submit"
                                 className="border px-12 py-2 rounded-lg border-slate-900 font-bold bg-slate-800 text-white active:bg-white active:text-slate-800"
                             >
-                                Create Project
+                                Save Draft
                             </button>
 
                             <button
@@ -80,7 +80,7 @@ const CreateProject = () => {
                                 onClick={handleCreateProjectAndPublish}
                                 className="border px-12 py-2 rounded-lg border-slate-900 font-bold bg-slate-800 text-white active:bg-white active:text-slate-800"
                             >
-                                Create Project &amp; Publish
+                                Save &amp; Publish
                             </button>
                         </div>
                     </form>

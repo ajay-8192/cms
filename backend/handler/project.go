@@ -19,7 +19,7 @@ func GetProjectsByUserId(c *gin.Context) {
 	
 	var projects []models.Project
 
-	results := queries.GetProjectsByUserId(parsedUUID, &projects);
+	results := queries.GetProjectsByUserId(parsedUUID, &projects, 0, 10);
 
 	if results.Error != nil {
 		log.Printf("Error in retreive %s", firstName)
@@ -339,8 +339,8 @@ func DeleteProjectById(c *gin.Context) {
 	}
 
 	// Fetch project by Id and validate based on role access
-	var project *models.Project
-	results := queries.GetProjectById(parsedUUID, project)
+	var project models.Project
+	results := queries.GetProjectById(parsedUUID, &project)
 	if results.RowsAffected == 0 || results.Error != nil {
 		log.Printf("Error fetching rows: %v - Project not found\n", results.Error)
 		c.JSON(500, gin.H{
@@ -350,7 +350,7 @@ func DeleteProjectById(c *gin.Context) {
 	}
 
 	// Delete
-	results, err = queries.DeleteProjectById(project)
+	results, err = queries.DeleteProjectById(&project)
 	if err != nil {
 		log.Printf("Error removing rows: %v\n", err)
 		c.JSON(500, gin.H{

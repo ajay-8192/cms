@@ -10,8 +10,8 @@ import (
 func getContentRoutes(router *gin.Engine) {
 	contentRoutes := router.Group("/content")
 	{
-		contentRoutes.GET("/:projectId", middleware.Authenticate, handler.GetContentsByProjectId)
-		contentRoutes.POST("/:projectId/create", middleware.Authenticate, handler.CreateContentForProject)
-		contentRoutes.GET("/:projectId/:contentId", middleware.Authenticate, handler.GetContentDetails)
+		contentRoutes.GET("/project/:projectId", middleware.Authenticate, handler.GetContentsByProjectId)
+		contentRoutes.POST("/project/:projectId/create", middleware.Authenticate, handler.CreateContentForProject)
+		contentRoutes.GET("/project/:projectId/:contentId", middleware.Authenticate, handler.GetContentDetails)
 	}
 }

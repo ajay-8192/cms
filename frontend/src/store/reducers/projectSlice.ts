@@ -37,11 +37,15 @@ const projectSlice = createSlice({
                 ...state,
                 ...action.payload
             }
+        },
+        setContentInProject: (state, action) => {
+            state.contents = [...action.payload]
         }
     }
 });
 
 export default projectSlice.reducer;
 export const {
-    setProject
+    setProject,
+    setContentInProject
 } = projectSlice.actions;
