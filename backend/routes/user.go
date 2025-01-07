@@ -2,6 +2,7 @@ package routes
 
 import (
 	"cms/handler"
+	"cms/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,9 +12,10 @@ func getUserRoutes(router *gin.Engine) {
 	{
 		userRoute.POST("/create", handler.CreateUser)
 		userRoute.POST("/login", handler.LoginUser)
-		userRoute.GET("/details", handler.GetUserDetails)
-		userRoute.POST("/details", handler.UpdateUserDetails)
-		userRoute.POST("/logout", handler.LogoutUser)
 		userRoute.POST("/forgot-password", handler.ForgotPassword)
+		userRoute.POST("/reset-password", handler.ResetPassword)
+		userRoute.GET("/details", middleware.Authenticate, handler.GetUserDetails)
+		userRoute.POST("/details", middleware.Authenticate, handler.UpdateUserDetails)
+		userRoute.POST("/logout", middleware.Authenticate, handler.LogoutUser)
 	}
 }

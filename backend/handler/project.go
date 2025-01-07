@@ -3,7 +3,9 @@ package handler
 import (
 	"cms/database"
 	"cms/models"
+	"cms/queries"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,32 +13,40 @@ import (
 	"gorm.io/gorm"
 )
 
+
+func GetProjectsByUserId(c *gin.Context) {
+	firstName, parsedUUID := getUserDetailsFromRequest(c)
+	
+	var projects []models.Project
+
+	results := queries.GetProjectsByUserId(parsedUUID, &projects);
+
+	if results.Error != nil {
+		log.Printf("Error in retreive %s", firstName)
+		log.Printf("Error in retreive %+v", results.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "No Projects found",
+		})
+		return
+	}
+
+	if results.RowsAffected == 0 {
+		log.Printf("No project found for %s", firstName)
+		c.JSON(http.StatusOK, gin.H{
+			"message": "No Projects found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Successfully retreived projects",
+		"projects": projects,
+	})
+}
+
+
 func CreateProject(c *gin.Context) {
-	// Get the authenticated user ID from the context
-	id, ok := c.Get("id")
-	if !ok {
-		log.Println("User not Authenticated")
-		c.JSON(403, gin.H{
-			"message": "Unauthorized access",
-		})
-		return
-	}
-
-	fullName, ok := c.Get("fullName")
-	if !ok {
-		log.Println("Name not added Authenticated")
-		fullName = ""
-	}
-
-	// Parse the user ID as a UUID
-	parsedUUID, err := uuid.Parse(id.(string))
-	if err != nil {
-		log.Printf("Error parsing UUID: %v\n", err)
-		c.JSON(500, gin.H{
-			"message": "Internal Server Error",
-		})
-		return
-	}
+	fullName, parsedUUID := getUserDetailsFromRequest(c)
 
 	// Parse the incoming request data
 	data := GetPostRequestData(c)
@@ -65,7 +75,7 @@ func CreateProject(c *gin.Context) {
 	projectID := uuid.New()
 
 	// Wrap all database operations in a transaction
-	err = database.DB.Transaction(func(tx *gorm.DB) error {
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		// 1. Create the Project
 		project := models.Project{
 			Id:          projectID,
@@ -310,5 +320,54 @@ func UpdateProjectDetails(c *gin.Context) {
 				"name": project.User.FirstName + project.User.LastName,
 			},
 		},
+	})
+}
+
+func DeleteProjectById(c *gin.Context) {
+
+	// Get the project ID from the URL
+	projectID := c.Param("id")
+
+	// Parse the project ID as a UUID
+	parsedUUID, err := uuid.Parse(projectID)
+	if err != nil {
+		log.Printf("Error parsing UUID: %v\n", err)
+		c.JSON(400, gin.H{
+			"message": "Invalid project ID",
+		})
+		return
+	}
+
+	// Fetch project by Id and validate based on role access
+	var project *models.Project
+	results := queries.GetProjectById(parsedUUID, project)
+	if results.RowsAffected == 0 || results.Error != nil {
+		log.Printf("Error fetching rows: %v - Project not found\n", results.Error)
+		c.JSON(500, gin.H{
+			"message": "No projects found",
+		})
+		return
+	}
+
+	// Delete
+	results, err = queries.DeleteProjectById(project)
+	if err != nil {
+		log.Printf("Error removing rows: %v\n", err)
+		c.JSON(500, gin.H{
+			"message": "Error in delete project",
+		})
+		return
+	}
+
+	if results.RowsAffected == 0 {
+		log.Printf("Error removing rows: %v\n", err)
+		c.JSON(500, gin.H{
+			"message": "Failed to delete project",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Project Deleted Successfully",
 	})
 }

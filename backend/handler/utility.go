@@ -3,11 +3,13 @@ package handler
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -94,4 +96,36 @@ func IsTokenBlacklisted(rdb *redis.Client, token string) (bool, error) {
 	}
 	// Token is blacklisted
 	return true, nil
+}
+
+func getUserDetailsFromRequest(c *gin.Context) (fullName string, parsedUUID  uuid.UUID) {
+	// Get the authenticated user ID from the context
+	id, ok := c.Get("id")
+	if !ok {
+		log.Println("User not Authenticated")
+		c.JSON(403, gin.H{
+			"message": "Unauthorized access",
+		})
+		return "", uuid.Nil
+	}
+
+	name, ok := c.Get("fullName")
+	if !ok {
+		log.Println("Name not added Authenticated")
+		fullName = ""
+	} else {
+		fullName = name.(string)
+	}
+
+	// Parse the user ID as a UUID
+	parsedUUID, err := uuid.Parse(id.(string))
+	if err != nil {
+		log.Printf("Error parsing UUID: %v\n", err)
+		c.JSON(500, gin.H{
+			"message": "Internal Server Error",
+		})
+		return "", uuid.Nil
+	}
+
+	return fullName, parsedUUID
 }
