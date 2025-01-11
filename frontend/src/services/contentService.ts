@@ -25,10 +25,27 @@ export const fetchContentsByProjectId = async (projectId: string, sideEffects: S
 
     try {
         const result = await fetchData(url);
-        console.log("Post response:", result);
+        console.log("Get response:", result);
         onSuccess?.(result?.data?.contents);
     } catch (error) {
         onError?.(error);
-        console.log("Error posting data:", error);
+        console.log("Error fetching data:", error);
+    }
+}
+
+export const fetchContentsByContentId = async (payload: { projectId: string; contentId: string }, sideEffects: SideEffectsProps = defaultSideEffects) => {
+    const { onSuccess, onError } = sideEffects;
+
+    const { projectId, contentId } = payload;
+
+    const url = BASE_URL + `content/project/${projectId}/${contentId}`;
+
+    try {
+        const result = await fetchData(url);
+        console.log("Get response:", result);
+        onSuccess?.(result?.data?.content);
+    } catch (error) {
+        onError?.(error);
+        console.log("Error Fetching data:", error);
     }
 }

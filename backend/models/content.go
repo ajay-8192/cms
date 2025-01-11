@@ -17,7 +17,7 @@ const (
 
 // Content represents the main content document
 type Content struct {
-	Id               uuid.UUID              `bson:"id" json:"id"`
+	Id               string              	`bson:"id" json:"id"`
 	VersionID        uint64                 `bson:"versionId" json:"versionId"`
 	Name             string                 `bson:"name" json:"name"`
 	CreatedUser      string                 `bson:"createdUser" json:"createdUser"`

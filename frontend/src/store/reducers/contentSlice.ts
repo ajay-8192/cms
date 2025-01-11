@@ -1,22 +1,31 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type ContentType = {
+export type ContentType = {
+    createdAt: string;
+    createdUser: string;
+    data: { [key: string]: any };
     id: string;
-    key: string;
-    value: any;
-    type: string;
+    lastModifiedUser: string;
+    name: string;
+    projectId: string;
+    status: "Draft" | "Published" | "Archived";
+    updatedAt: string;
+    versionId: number;
+    _id: number;
 };
 
 type ContentSliceTypes = {
     contentId?: string;
     contentName: string;
     content: ContentType[];
+    selectedContent?: ContentType;
 };
 
 const initialState: ContentSliceTypes = {
     contentId: "",
     content: [],
-    contentName: ""
+    contentName: "",
+    selectedContent: undefined
 };
 
 const contentSlice = createSlice({
@@ -34,6 +43,9 @@ const contentSlice = createSlice({
         },
         setContentName: (state, action) => {
             state.contentName = action.payload;
+        },
+        setSelectedContent: (state, action) => {
+            state.selectedContent = action.payload;
         }
     }
 });
@@ -43,5 +55,6 @@ export const {
     setContentId,
     setContent,
     addContent,
-    setContentName
+    setContentName,
+    setSelectedContent
 } = contentSlice.actions;

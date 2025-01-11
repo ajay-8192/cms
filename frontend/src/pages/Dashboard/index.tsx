@@ -1,6 +1,7 @@
+import { Link } from "react-router";
 import PageHeader from "../../components/Common/PageHeader";
 import HowToUseProjects from "../../components/HowToUseProjects";
-import RecentProjects from "../../components/RecentProjects";
+// import RecentProjects from "../../components/RecentProjects";
 
 const Dashboard = () => {
     return (
@@ -26,16 +27,18 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex w-full gap-4 flex-wrap">
-                    <div className="rounded-2xl items-center border p-6 shrink basis-[calc(50%-16px)] bg-white">
+                    {/* <div className="rounded-2xl items-center border p-6 shrink basis-[calc(50%-16px)] bg-white">
                         <h2 className="font-bold text-xl">Recently Opened Projects</h2>
                         <p className="text-xs opacity-50">Quick access to your recent work</p>
 
                         <RecentProjects />
-                    </div>
+                    </div> */}
 
-                    <div className="rounded-2xl items-center border p-6 shrink basis-[calc(50%-16px)] bg-white">
+                    <div className="rounded-2xl items-center border p-6 w-full bg-white">
+                        <Link to={'/projects'} className="float-right border rounded-xl px-6 py-2 border-slate-900">Open Projects</Link>
                         <h2 className="font-bold text-xl">How to Use Projects</h2>
                         <p className="text-xs opacity-50">Quick guide to get you started</p>
+
 
                         <HowToUseProjects />
                     </div>

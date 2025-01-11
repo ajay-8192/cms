@@ -63,7 +63,7 @@ const AuthLayout = () => {
                     </span>
                     <p>Create New Project</p>
                 </NavLink>
-                <NavLink
+                {/* <NavLink
                     to="/bulk-upload"
                     className={({ isActive }) =>
                         `flex gap-x-3 items-center w-full border border-slate-800 px-6 py-3 rounded-lg hover:bg-white hover:text-slate-800 ${isActive ? "border-white font-medium" : ""}`
@@ -73,7 +73,7 @@ const AuthLayout = () => {
                         upload_file
                     </span>
                     <p>Bulk Upload</p>
-                </NavLink>
+                </NavLink> */}
                 <NavLink
                     to="/profile"
                     className={({ isActive }) =>

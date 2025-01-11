@@ -103,7 +103,7 @@ func CreateContentForProject(c *gin.Context) {
 
 	// Create Content object
 	content := models.Content{
-		Id:               uuid.New(),
+		Id:               uuid.New().String(),
 		VersionID:        1,
 		Name:             name,
 		CreatedUser:      userId.String(),
@@ -208,3 +208,7 @@ func GetContentDetails(c *gin.Context) {
 		},
 	})
 }
+
+// func DeleteContentById(c *gin.Context) {
+// 	contentId := c.Param("contentid")
+// }

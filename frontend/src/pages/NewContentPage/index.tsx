@@ -1,17 +1,18 @@
-import { useSelector } from "react-redux";
 import PageHeader from "../../components/Common/PageHeader";
-import { RootState } from "../../store/store";
-import { useDispatch } from "react-redux";
-import { addContent, setContent, setContentName } from "../../store/reducers/contentSlice";
 import { createContent } from "../../services/contentService";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 
 const NewContentPage = () => {
 
-    const { content: contents, contentName } = useSelector((state: RootState) => state.contents);
-    const dispatch = useDispatch();
-
+    const [contents, setContents] = useState([
+        {
+            type: "",
+            key: "",
+            value: ""
+        }
+    ]);
+    const [contentName, setContentName] = useState("");
     const [isNameEditable, setIsNameEditable] = useState(false);
 
     useEffect(() => {
@@ -23,7 +24,10 @@ const NewContentPage = () => {
     const { projectId } = useParams();
 
     const handleNewData = () => {
-        dispatch(addContent({ key: "", value: "", type: "" }));
+        setContents([
+            ...contents,
+            { key: "", value: "", type: "" }
+        ])
     };
 
     const handleOnValueChange = (value: string, index: number) => {
@@ -34,7 +38,7 @@ const NewContentPage = () => {
                 value: i === index ? value : content.value
             }
         });
-        dispatch(setContent(updatedContents));
+        setContents(updatedContents)
     }
 
     const handleOnKeyChange = (key: string, index: number) => {
@@ -49,7 +53,7 @@ const NewContentPage = () => {
                 key: i === index ? key : content.key
             }
         });
-        dispatch(setContent(updatedContents));
+        setContents(updatedContents)
     };
     
     const onSuccess = (data: any) => {
@@ -83,7 +87,7 @@ const NewContentPage = () => {
                             type="text"
                             className="border rounded-md p-2 ml-4"
                             value={contentName}
-                            onChange={(e) => dispatch(setContentName(e.target.value))}
+                            onChange={(e) => setContentName(e.target.value)}
                         />
                     ) : contentName}
                 </div>

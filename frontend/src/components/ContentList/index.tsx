@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 type ContentListProps = {};
 
@@ -31,7 +31,24 @@ const ContentList: React.FC<ContentListProps> = () => {
     }
 
     return (
-        <div>ContentList</div>
+        <div className="space-y-6">
+            {contents.map((content) => {
+                return (
+                    <div key={content.id} className="space-y-2 border-b last:border-none pb-4">
+                        <Link to={`/project/${projectId}/content/${content.id}`} className="underline hover:opacity-50 font-bold">
+                            <p>{content.name}</p>
+                        </Link>
+                        <p className="opacity-60">{content.status}</p>
+                    </div>
+                )
+            })}
+            <button
+                onClick={handleNewContent}
+                className="border px-12 py-2 rounded-lg border-slate-900 font-bold bg-slate-800 text-white active:bg-white active:text-slate-800"
+            >
+                    Create Content
+            </button>
+        </div>
     );
 };
 
