@@ -16,7 +16,7 @@ import { fetchContentsByProjectId } from "../../services/contentService";
 const ProjectDetail = () => {
 
     const { projectId } = useParams();
-    const title = useSelector((state: RootState) => state.project.title);
+    const { title, id } = useSelector((state: RootState) => state.project);
     const dispatch = useDispatch();
 
     const onSuccess = (data: any) => {
@@ -36,7 +36,7 @@ const ProjectDetail = () => {
     }
 
     useEffect(() => {
-        if (projectId) {
+        if (projectId && projectId !== id) {
             fetchProjectDetails({ projectId }, { onSuccess, onError });
             fetchContentsByProjectId(projectId, {
                 onSuccess: onContentSuccess,

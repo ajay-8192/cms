@@ -17,16 +17,16 @@ const (
 
 // Content represents the main content document
 type Content struct {
-	Id               string              	`bson:"id" json:"id"`
+	Id               string                 `bson:"id" json:"id" index:"true"`
 	VersionID        uint64                 `bson:"versionId" json:"versionId"`
-	Name             string                 `bson:"name" json:"name"`
+	Name             string                 `bson:"name" json:"name" index:"true"`
 	CreatedUser      string                 `bson:"createdUser" json:"createdUser"`
 	LastModifiedUser string                 `bson:"lastModifiedUser" json:"lastModifiedUser"`
 	ProjectID        string                 `bson:"projectId" json:"projectId"`
 	CreatedAt        time.Time              `bson:"createdAt" json:"createdAt"`
 	UpdatedAt        time.Time              `bson:"updatedAt" json:"updatedAt"`
 	Status           StatusEnum             `bson:"status" json:"status"`
-	Data             map[string]interface{} `bson:"data" json:"data"` // BSON supports flexible maps
+	Data             map[string]interface{} `bson:"data" json:"data"`
 }
 
 // ContentVersion represents a version of the content

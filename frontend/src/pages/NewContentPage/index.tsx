@@ -1,10 +1,11 @@
 import PageHeader from "../../components/Common/PageHeader";
 import { createContent } from "../../services/contentService";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 
 const NewContentPage = () => {
 
+    const navigate = useNavigate();
     const [contents, setContents] = useState([
         {
             type: "",
@@ -58,6 +59,10 @@ const NewContentPage = () => {
     
     const onSuccess = (data: any) => {
         console.log("Content created:", data);
+        const id = data?.content?.id;
+        if (id) {
+            navigate(`/project/${projectId}/content/${id}`)
+        }
     };
 
     const onError = (error: any) => {
