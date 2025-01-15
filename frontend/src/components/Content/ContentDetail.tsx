@@ -60,6 +60,10 @@ const ContentDetail: React.FC<ContentDetailProps> = ({ contentData }) => {
         ])
     }
 
+    const handleUpdateContentData = () => {
+        console.log('===> ', { content });
+    }
+
     return (
         <div>
             <div className="flex flex-col space-y-2 mt-4">
@@ -73,12 +77,20 @@ const ContentDetail: React.FC<ContentDetailProps> = ({ contentData }) => {
                         <input type="text" className="border rounded-md p-2 w-5/6" value={content.value} onChange={(e) => handleOnValueChange(e.target.value, index)} />
                     </div>
                 ))}
-                <button
-                    className="w-fit border px-12 py-2 rounded-lg border-slate-900 font-bold bg-slate-800 text-white active:bg-white active:text-slate-800"
-                    onClick={handleNewContentData}
-                >
-                    New Data
-                </button>
+                <div>
+                    <button
+                        className="w-fit border px-12 py-2 rounded-lg border-slate-900 font-bold bg-slate-800 text-white active:bg-white active:text-slate-800"
+                        onClick={handleNewContentData}
+                    >
+                        New Data
+                    </button>
+                    <button
+                        className="w-fit border px-12 py-2 rounded-lg border-slate-900 font-bold text-slate-900 active:bg-slate-900 active:text-white"
+                        onClick={handleUpdateContentData}
+                    >
+                        Update Data
+                    </button>
+                </div>
             </div>
         </div>
     );

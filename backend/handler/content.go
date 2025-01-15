@@ -38,6 +38,59 @@ func GetContentsByProjectId(c *gin.Context) {
 	})
 }
 
+func UpdateContentById(c *gin.Context) {
+	contentId := c.Param("contentId")
+	data := GetPostRequestData(c)
+
+	contentName := data["contentName"].(string)
+	contentData, ok := data["contents"].([]interface{})
+	if !ok {
+		log.Println("Invalid or missing contents")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Contents must be an array",
+		})
+		return
+	}
+
+	contents, err := extractContents(contentData)
+	if err != nil {
+		log.Printf("Error processing contents: %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid contents format",
+		})
+		return
+	}
+	fmt.Println(contents, contentName)
+
+	var content models.Content
+	result := queries.FetchContentById(contentId, "", &content)
+
+	err = result.Decode(&content)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	content.Name = contentName;
+	content.Data = contents
+	results, err := queries.UpdateContent(contentId, content)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Println(results.MatchedCount)
+	if results.MatchedCount != 1 {
+		c.JSON(500, gin.H{"error": "Multiple data found with same content ID"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Content updated successfully",
+		"data":    content,
+	})
+}
+
 func CreateContentForProject(c *gin.Context) {
 	// Extract user ID from context
 	id, ok := c.Get("id")
