@@ -6,6 +6,7 @@ import (
 	"cms/queries"
 	"cms/routes"
 	"log"
+	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,12 @@ func main() {
 		ExposeHeaders: 	  []string{"Set-Cookie"},
 		AllowCredentials: true,
 	}))
+
+	router.GET("/status", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "CMS backend service running",
+		})
+	})
 
 	routes.InitRoutes(router);
 
