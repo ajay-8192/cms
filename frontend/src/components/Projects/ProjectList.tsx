@@ -1,13 +1,23 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { Link } from "react-router";
+import { deleteProject } from "../../services/projectService";
+import { useDispatch } from "react-redux";
+import { removeProject } from "../../store/reducers/projectsSlice";
 
 type ProjectListProps = {};
 
 const ProjectList: React.FC<ProjectListProps> = () => {
 
     const projects = useSelector((state: RootState) => state.projects.projects);
-    console.log('===> ', { projects });
+    const dispatch = useDispatch();
+
+    const handleDeleteProject = (projectId: string) => {
+        const onSuccess = () => {
+            dispatch(removeProject(projectId));
+        }
+        deleteProject(projectId, { onSuccess });
+    }
     
 
     if (!projects.length) {
@@ -31,7 +41,7 @@ const ProjectList: React.FC<ProjectListProps> = () => {
                             <p className="opacity-50">{project.createdAt}</p>
                             <p className="opacity-50">{project.status}</p>
                         </div>
-                        
+                        <button onClick={() => handleDeleteProject(project.id)} className="text-red-500">Delete</button>
                     </div>
                 )
             })}

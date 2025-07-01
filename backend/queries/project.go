@@ -20,6 +20,12 @@ func GetProjectById(projectId uuid.UUID, project *models.Project) *gorm.DB {
 	return database.DB.First(project, "id = ?", projectId)
 }
 
+func GetProjectByApiKey(apiKey string) (*models.Project, error) {
+	var project models.Project
+	result := database.DB.First(&project, "api_key = ?", apiKey)
+	return &project, result.Error
+}
+
 func DeleteProjectById(project *models.Project) (*gorm.DB, error) {
 
 	if (project.Id == uuid.Nil) {
@@ -27,4 +33,16 @@ func DeleteProjectById(project *models.Project) (*gorm.DB, error) {
 	}
 
 	return database.DB.Delete(project, "id = ?", project.Id), nil
+}
+
+func CreateProject(project *models.Project) *gorm.DB {
+	return database.DB.Create(project)
+}
+
+func CreateProjectRole(projectRole *models.ProjectRole) *gorm.DB {
+	return database.DB.Create(projectRole)
+}
+
+func CreateProjectVersion(projectVersion *models.ProjectVersion) *gorm.DB {
+	return database.DB.Create(projectVersion)
 }

@@ -64,15 +64,7 @@ func CreateUser(c *gin.Context) {
 			"updatedAt": user.UpdateAt,
 			"bio": user.Bio,
 	}
-	expiration := time.Now().Add(15 * 24 * time.Hour)
-
-	token, err := GenerateToken(userDetails, expiration)
-	if err != nil {
-		log.Printf("Error generating token: %v", err)
-	}
-
-
-	c.SetCookie("token", token, int(expiration.Unix()), "/", "", c.Request.TLS != nil, true)
+	SetAuthCookie(c, userDetails)
 
 	c.JSON(200, gin.H{
 		"message": "User created successfully",
@@ -112,21 +104,8 @@ func LoginUser(c *gin.Context) {
 			"updatedAt": user.UpdateAt,
 			"bio": user.Bio,
 	}
-	expiration := time.Now().Add(15 * 24 * time.Hour)
+	SetAuthCookie(c, userDetails)
 
-	token, err := GenerateToken(userDetails, expiration)
-	if err != nil {
-		log.Printf("Error generating token: %v", err)
-		c.JSON(403, gin.H{
-			"message": "Error in generating token",
-		})
-		return
-	}
-	host := strings.Split(c.Request.Host, ":")[0]
-	log.Printf("hostname: %s", host)
-
-	// c.SetCookie("token", token, int(expiration.Unix()), "/", "", c.Request.TLS != nil, true)
-	c.Header("Set-Cookie", "token=" + token + "; Expires=" + expiration.UTC().Format(http.TimeFormat) + "; Path=/; HttpOnly")
 	c.JSON(200, gin.H{
 		"message": "User loggedin successfully",
 		"userDetails": userDetails,
@@ -232,20 +211,7 @@ func UpdateUserDetails(c *gin.Context) {
 		"updatedAt": user.UpdateAt,
 		"bio": user.Bio,
 	}
-	expiration := time.Now().Add(15 * 24 * time.Hour)
-
-	token, err = GenerateToken(userDetails, expiration)
-	if err != nil {
-		log.Printf("Error generating token: %v", err)
-		c.JSON(403, gin.H{
-			"message": "Error in generating token",
-		})
-		return
-	}
-	host := strings.Split(c.Request.Host, ":")[0]
-	log.Printf("hostname: %s", host)
-
-	c.Header("Set-Cookie", "token=" + token + "; Expires=" + expiration.UTC().Format(http.TimeFormat) + "; Path=/; HttpOnly")
+	SetAuthCookie(c, userDetails)
 	c.JSON(200, gin.H{"message": "User updated successfully", "userDetails": userDetails})
 }
 
@@ -295,8 +261,17 @@ func ForgotPassword(c *gin.Context) {
 	}
 
 	// generate reset token and user token and create URL for reset password
+	resetToken := uuid.New().String()
+	err := SetDataInRedis(database.RDB, resetToken, user.Email, time.Hour*1)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Failed to set reset token",
+		})
+		return
+	}
 
 	// Send reset password link to mail with mail integration
+	log.Printf("Reset token for %s: %s", user.Email, resetToken)
 
 	c.JSON(200, gin.H{
 		"message": "A link is shared through mail for reset password",
@@ -307,9 +282,50 @@ func ResetPassword(c *gin.Context) {
 	data := GetPostRequestData(c)
 	resetToken := data["resetToken"].(string)
 	password := data["password"].(string)
-	confirmPassword := data["password"].(string)
+	confirmPassword := data["confirmPassword"].(string)
+
+	if password != confirmPassword {
+		c.JSON(400, gin.H{
+			"message": "Passwords do not match",
+		})
+		return
+	}
 
 	// fetch user details from redis and update password by validating to DB
+	email, err := database.RDB.Get(ctx, resetToken).Result()
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "Invalid or expired reset token",
+		})
+		return
+	}
 
-	log.Println(resetToken, password, confirmPassword)
+	var user *models.User
+	results := database.DB.Where("email = ?", email).First(&user)
+	if results.RowsAffected == 0 {
+		c.JSON(401, gin.H{
+			"message": "User does not exist",
+		})
+		return
+	}
+
+	hashedPassword, err := GenerateHashString(password)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Failed to hash password",
+		})
+		return
+	}
+
+	user.Password = hashedPassword
+	if err := database.DB.Save(&user).Error; err != nil {
+		c.JSON(500, gin.H{"error": "Failed to update user password"})
+		return
+	}
+
+	database.RDB.Del(ctx, resetToken)
+
+	c.JSON(200, gin.H{
+		"message": "Password updated successfully",
+	})
 }

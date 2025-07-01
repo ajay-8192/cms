@@ -54,6 +54,10 @@ func DeleteContent(contentId string) (*mongo.DeleteResult, error) {
 	return contentsCollection.DeleteOne(context.TODO(), map[string]interface{}{"id": contentId})
 }
 
+func DeleteContentByProjectId(projectId string) (*mongo.DeleteResult, error) {
+	return contentsCollection.DeleteMany(context.TODO(), bson.M{"projectId": projectId})
+}
+
 func FetchContentById(contentId string, projections string, content *models.Content) *mongo.SingleResult {
 	return contentsCollection.FindOne(context.TODO(), map[string]interface{}{"id": contentId})
 }

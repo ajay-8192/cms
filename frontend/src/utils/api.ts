@@ -43,3 +43,23 @@ export const postData = async (url: string, data: any) => {
     throw error;
   }
 };
+
+export const deleteData = async (url: string) => {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      const errorMessage = errorData.message || "An error occurred";
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting data:", error);
+    throw error;
+  }
+}

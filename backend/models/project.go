@@ -35,6 +35,7 @@ type Project struct {
 	CreatedAt		time.Time		`json:"createdAt"`
 	UpdateAt		time.Time		`json:"updatedAt"`
 	PublishedAt		*time.Time		`json:"publishedAt"`
+	ApiKey			string			`json:"apiKey" gorm:"type:varchar(255);uniqueIndex"`
 }
 
 type ProjectVersion struct {
@@ -54,6 +55,7 @@ func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
 		p.Id = uuid.New()
 		p.CreatedAt = time.Now()
 		p.UpdateAt = time.Now()
+		p.ApiKey = uuid.New().String()
 	}
 	return
 }
