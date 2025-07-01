@@ -16,7 +16,7 @@ import { fetchContentsByProjectId } from "../../services/contentService";
 const ProjectDetail = () => {
 
     const { projectId } = useParams();
-    const { title, id } = useSelector((state: RootState) => state.project);
+    const { title, id, apiKey } = useSelector((state: RootState) => state.project);
     const dispatch = useDispatch();
 
     const onSuccess = (data: any) => {
@@ -57,6 +57,18 @@ const ProjectDetail = () => {
                     </div>
 
                     <ProjectDetailSection />
+                </div>
+
+                <div className="flex flex-col rounded-2xl border p-6 m-6 bg-white">
+                    <div className="mb-6">
+                        <h1 className="font-bold text-2xl">API Key</h1>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <p className="font-mono">{apiKey}</p>
+                        <span className="material-symbols-outlined cursor-pointer">
+                            content_copy
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex flex-col rounded-2xl border p-6 m-6 bg-white">

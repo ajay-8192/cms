@@ -26,6 +26,7 @@ type ProjectSliceTypes = {
     name: string;
   };
   contents: ContentTypes[];
+  apiKey: string;
 };
 
 const initialState: ProjectSliceTypes = {
@@ -40,6 +41,7 @@ const initialState: ProjectSliceTypes = {
     name: "",
   },
   contents: [],
+  apiKey: "",
 };
 
 const projectSlice = createSlice({
@@ -55,8 +57,11 @@ const projectSlice = createSlice({
     setContentInProject: (state, action) => {
       state.contents = [...action.payload];
     },
+    removeContentFromProject: (state, action) => {
+      state.contents = state.contents.filter(content => content.id !== action.payload);
+    }
   },
 });
 
 export default projectSlice.reducer;
-export const { setProject, setContentInProject } = projectSlice.actions;
+export const { setProject, setContentInProject, removeContentFromProject } = projectSlice.actions;

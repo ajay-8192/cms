@@ -9,4 +9,6 @@ func InitRoutes(router *gin.Engine) {
 	getProjectRoutes(router)
 
 	getContentRoutes(router)
+
+	getServiceRoutes(router)
 }

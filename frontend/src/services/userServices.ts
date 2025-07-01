@@ -73,7 +73,7 @@ type ResetPasswordPayloadTypes = {
 }
 
 export const passwordReset = async (payload: ResetPasswordPayloadTypes, sideEffects: SideEffectsProps = defaultSideEffects) => {
-    const url = BASE_URL + "user/reset-passsword";
+    const url = BASE_URL + "user/reset-password";
     const { onSuccess, onError } = sideEffects;
 
     try {

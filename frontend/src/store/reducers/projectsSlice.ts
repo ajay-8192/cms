@@ -26,11 +26,15 @@ const projectsSlice = createSlice({
     reducers: {
         setProjectList: (state, action) => {
             state.projects = [ ...action.payload ]
+        },
+        removeProject: (state, action) => {
+            state.projects = state.projects.filter(project => project.id !== action.payload)
         }
     }
 });
 
 export default projectsSlice.reducer;
 export const {
-    setProjectList
+    setProjectList,
+    removeProject
 } = projectsSlice.actions

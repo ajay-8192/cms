@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { updateContent } from "../../services/contentService";
 
 type ContentDetailProps = {
     contentData?: { [key: string]: any } | undefined
@@ -7,6 +9,7 @@ type ContentDetailProps = {
 const ContentDetail: React.FC<ContentDetailProps> = ({ contentData }) => {
 
     const [content, setContent] = useState<any[]>([]);
+    const { projectId, contentId } = useParams();
     useEffect(() => {
         if (contentData !== undefined) {
             const d = Object.keys(contentData).map((key) => {
@@ -61,7 +64,13 @@ const ContentDetail: React.FC<ContentDetailProps> = ({ contentData }) => {
     }
 
     const handleUpdateContentData = () => {
-        console.log('===> ', { content });
+        if (projectId && contentId) {
+            const data = {
+                contents: content,
+                contentName: ""
+            }
+            updateContent({ data, projectId, contentId });
+        }
     }
 
     return (

@@ -1,4 +1,4 @@
-import { BASE_URL, fetchData, postData } from "../utils/api";
+import { BASE_URL, deleteData, fetchData, postData } from "../utils/api";
 import { defaultSideEffects } from "../utils/helper";
 import { SideEffectsProps } from "./userServices";
 
@@ -60,5 +60,19 @@ export const fetchAllProjectLists = async (sideEffects: SideEffectsProps = defau
     } catch (error) {
         onError?.(error);
         console.log("Error posting data:", error);
+    }
+}
+
+export const deleteProject = async (projectId: string, sideEffects: SideEffectsProps = defaultSideEffects) => {
+    const { onSuccess, onError } = sideEffects;
+
+    const url = BASE_URL + `project/${projectId}`;
+    try {
+        const result = await deleteData(url);
+        console.log("Delete response:", result);
+        onSuccess?.(result);
+    } catch (error) {
+        onError?.(error);
+        console.log("Error deleting data:", error);
     }
 }

@@ -262,6 +262,21 @@ func GetContentDetails(c *gin.Context) {
 	})
 }
 
-// func DeleteContentById(c *gin.Context) {
-// 	contentId := c.Param("contentid")
-// }
+func DeleteContentById(c *gin.Context) {
+	contentId := c.Param("contentId")
+
+	results, err := queries.DeleteContent(contentId)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if results.DeletedCount == 0 {
+		c.JSON(404, gin.H{"error": "Content not found"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Content deleted successfully",
+	})
+}

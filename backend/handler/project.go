@@ -74,61 +74,56 @@ func CreateProject(c *gin.Context) {
 	// Generate IDs for the project, project role, and project version to avoid additional queries
 	projectID := uuid.New()
 
-	// Wrap all database operations in a transaction
-	err := database.DB.Transaction(func(tx *gorm.DB) error {
-		// 1. Create the Project
-		project := models.Project{
-			Id:          projectID,
-			Title:       title,
-			VersionId:   1,
-			Description: description,
-			CreatedBy:   parsedUUID,
-			CreatedAt:   time.Now(),
-			UpdateAt:    time.Now(),
-			PublishedAt: publishedAt,
-		}
+	// 1. Create the Project
+	project := models.Project{
+		Id:          projectID,
+		Title:       title,
+		VersionId:   1,
+		Description: description,
+		CreatedBy:   parsedUUID,
+		CreatedAt:   time.Now(),
+		UpdateAt:    time.Now(),
+		PublishedAt: publishedAt,
+	}
 
-		if err := tx.Create(&project).Error; err != nil {
-			log.Printf("Error creating project: %v\n", err)
-			return err
-		}
-
-		// 2. Batch insert related records (Role and Version)
-		projectRole := models.ProjectRole{
-			ProjectId: projectID,
-			UserId:    parsedUUID,
-			Role:      models.OwnerRole,
-		}
-
-		projectVersion := models.ProjectVersion{
-			VersionId:   1,
-			ProjectId:   projectID,
-			ModifiedBy:  parsedUUID,
-			Title:       title,
-			Description: description,
-			ModifiedAt:  time.Now(),
-			PublishedAt: publishedAt,
-		}
-
-		if err := tx.Create(&projectRole).Error; err != nil {
-			log.Printf("Error creating Roles records: %v\n", err)
-			return err
-		}
-
-		// Batch insert related records
-		if err := tx.Create(&projectVersion).Error; err != nil {
-			log.Printf("Error creating versions records: %v\n", err)
-			return err
-		}
-
-		return nil
-	})
-
-	// Handle transaction errors
-	if err != nil {
-		log.Printf("Transaction failed: %v\n", err)
+	if err := queries.CreateProject(&project).Error; err != nil {
+		log.Printf("Error creating project: %v\n", err)
 		c.JSON(500, gin.H{
 			"message": "Failed to create project",
+		})
+		return
+	}
+
+	// 2. Batch insert related records (Role and Version)
+	projectRole := models.ProjectRole{
+		ProjectId: projectID,
+		UserId:    parsedUUID,
+		Role:      models.OwnerRole,
+	}
+
+	projectVersion := models.ProjectVersion{
+		VersionId:   1,
+		ProjectId:   projectID,
+		ModifiedBy:  parsedUUID,
+		Title:       title,
+		Description: description,
+		ModifiedAt:  time.Now(),
+		PublishedAt: publishedAt,
+	}
+
+	if err := queries.CreateProjectRole(&projectRole).Error; err != nil {
+		log.Printf("Error creating Roles records: %v\n", err)
+		c.JSON(500, gin.H{
+			"message": "Failed to create project role",
+		})
+		return
+	}
+
+	// Batch insert related records
+	if err := queries.CreateProjectVersion(&projectVersion).Error; err != nil {
+		log.Printf("Error creating versions records: %v\n", err)
+		c.JSON(500, gin.H{
+			"message": "Failed to create project version",
 		})
 		return
 	}
@@ -250,7 +245,7 @@ func UpdateProjectDetails(c *gin.Context) {
 	// Get the project ID from the URL
 	projectID := c.Param("id")
 
-	data := GetPostRequestData(c);
+	data := GetPostRequestData(c)
 
 	title := data["title"].(string)
 	description := data["description"].(string)
@@ -265,41 +260,42 @@ func UpdateProjectDetails(c *gin.Context) {
 		return
 	}
 
-	// Fetch the project details from the database
-	var project models.Project
-	if err := database.DB.Preload("User").First(&project, "id = ?", parsedUUID).Error; err != nil {
-		log.Printf("Error fetching project: %v\n", err)
-		c.JSON(500, gin.H{
-			"message": "Failed to fetch project",
-		})
-		return
-	}
+	err = database.DB.Transaction(func(tx *gorm.DB) error {
+		// Fetch the project details from the database
+		var project models.Project
+		if err := tx.Preload("User").First(&project, "id = ?", parsedUUID).Error; err != nil {
+			log.Printf("Error fetching project: %v\n", err)
+			return err
+		}
 
-	project.Title = title
-	project.Description = description
-	project.VersionId = project.VersionId + 1
+		project.Title = title
+		project.Description = description
+		project.VersionId = project.VersionId + 1
 
-	projectVersion := models.ProjectVersion{
-		VersionId:   project.VersionId,
-		ProjectId:   project.Id,
-		ModifiedBy:  project.CreatedBy,
-		Title:       title,
-		Description: description,
-		ModifiedAt:  time.Now(),
-		PublishedAt: project.PublishedAt,
-	}
+		projectVersion := models.ProjectVersion{
+			VersionId:   project.VersionId,
+			ProjectId:   project.Id,
+			ModifiedBy:  project.CreatedBy,
+			Title:       title,
+			Description: description,
+			ModifiedAt:  time.Now(),
+			PublishedAt: project.PublishedAt,
+		}
 
-	if err := database.DB.Create(&projectVersion).Error; err != nil {
-		log.Printf("Error updating project version: %v\n", err)
-		c.JSON(500, gin.H{
-			"message": "Failed to publish project",
-		})
-		return
-	}
+		if err := tx.Create(&projectVersion).Error; err != nil {
+			log.Printf("Error updating project version: %v\n", err)
+			return err
+		}
 
-	// Update the project in the database
-	if err := database.DB.Save(&project).Error; err != nil {
-		log.Printf("Error updating project: %v\n", err)
+		// Update the project in the database
+		if err := tx.Save(&project).Error; err != nil {
+			log.Printf("Error updating project: %v\n", err)
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Failed to publish project",
 		})
@@ -308,18 +304,7 @@ func UpdateProjectDetails(c *gin.Context) {
 
 	// Respond with the project details
 	c.JSON(200, gin.H{
-		"project": map[string]interface{}{
-			"id":          projectID,
-			"title":       project.Title,
-			"description": project.Description,
-			"createdAt":   project.CreatedAt,
-			"role":        models.OwnerRole,
-			"publishedAt": project.PublishedAt,
-			"createdBy":   map[string]interface{}{
-				"id": project.CreatedBy,
-				"name": project.User.FirstName + project.User.LastName,
-			},
-		},
+		"message": "Project updated successfully",
 	})
 }
 
@@ -350,6 +335,15 @@ func DeleteProjectById(c *gin.Context) {
 	}
 
 	// Delete
+	_, err = queries.DeleteContentByProjectId(project.Id.String())
+	if err != nil {
+		log.Printf("Error removing content rows: %v\n", err)
+		c.JSON(500, gin.H{
+			"message": "Error in delete content of a project",
+		})
+		return
+	}
+
 	results, err = queries.DeleteProjectById(&project)
 	if err != nil {
 		log.Printf("Error removing rows: %v\n", err)

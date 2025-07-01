@@ -1,4 +1,4 @@
-import { BASE_URL, fetchData, postData } from "../utils/api";
+import { BASE_URL, deleteData, fetchData, postData } from "../utils/api";
 import { defaultSideEffects } from "../utils/helper";
 import { SideEffectsProps } from "./userServices";
 
@@ -47,5 +47,34 @@ export const fetchContentsByContentId = async (payload: { projectId: string; con
     } catch (error) {
         onError?.(error);
         console.log("Error Fetching data:", error);
+    }
+}
+
+export const updateContent = async (payload: { data: any, projectId: string, contentId: string }, sideEffects: SideEffectsProps = defaultSideEffects) => {
+    const url = BASE_URL + `content/project/${payload.projectId}/${payload.contentId}`;
+
+    const { onSuccess, onError } = sideEffects;
+
+    try {
+        const result = await postData(url, payload.data);
+        console.log("Post response:", result);
+        onSuccess?.(result?.data);
+    } catch (error) {
+        onError?.(error);
+        console.log("Error posting data:", error);
+    }
+}
+
+export const deleteContent = async (payload: { projectId: string, contentId: string }, sideEffects: SideEffectsProps = defaultSideEffects) => {
+    const { onSuccess, onError } = sideEffects;
+
+    const url = BASE_URL + `content/project/${payload.projectId}/${payload.contentId}`;
+    try {
+        const result = await deleteData(url);
+        console.log("Delete response:", result);
+        onSuccess?.(result);
+    } catch (error) {
+        onError?.(error);
+        console.log("Error deleting data:", error);
     }
 }

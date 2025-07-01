@@ -98,6 +98,25 @@ func IsTokenBlacklisted(rdb *redis.Client, token string) (bool, error) {
 	return true, nil
 }
 
+func SetDataInRedis(rdb *redis.Client, key string, value string, expiration time.Duration) error {
+	err := rdb.Set(ctx, key, value, expiration).Err()
+	return err
+}
+
+func SetAuthCookie(c *gin.Context, userDetails map[string]interface{}) {
+	expiration := time.Now().Add(15 * 24 * time.Hour)
+
+	token, err := GenerateToken(userDetails, expiration)
+	if err != nil {
+		log.Printf("Error generating token: %v", err)
+		c.JSON(403, gin.H{
+			"message": "Error in generating token",
+		})
+		return
+	}
+	c.Header("Set-Cookie", "token="+token+"; Expires="+expiration.UTC().Format(http.TimeFormat)+"; Path=/; HttpOnly")
+}
+
 func getUserDetailsFromRequest(c *gin.Context) (fullName string, parsedUUID  uuid.UUID) {
 	// Get the authenticated user ID from the context
 	id, ok := c.Get("id")

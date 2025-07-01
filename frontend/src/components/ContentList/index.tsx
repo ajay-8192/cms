@@ -1,6 +1,9 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { Link, useNavigate, useParams } from "react-router";
+import { deleteContent } from "../../services/contentService";
+import { useDispatch } from "react-redux";
+import { removeContentFromProject } from "../../store/reducers/projectSlice";
 
 type ContentListProps = {};
 
@@ -9,12 +12,20 @@ const ContentList: React.FC<ContentListProps> = () => {
     const contents = useSelector((state: RootState) => state.project.contents);
     const navigate = useNavigate();
     const { projectId } = useParams();
+    const dispatch = useDispatch();
 
     const handleNewContent = () => {
         navigate(`/project/${projectId}/content/new`);
     }
 
-    
+    const handleDeleteContent = (contentId: string) => {
+        if (projectId) {
+            const onSuccess = () => {
+                dispatch(removeContentFromProject(contentId));
+            }
+            deleteContent({ projectId, contentId }, { onSuccess });
+        }
+    }
 
     if (contents.length === 0) {
         return (
@@ -34,11 +45,14 @@ const ContentList: React.FC<ContentListProps> = () => {
         <div className="space-y-6">
             {contents.map((content) => {
                 return (
-                    <div key={content.id} className="space-y-2 border-b last:border-none pb-4">
-                        <Link to={`/project/${projectId}/content/${content.id}`} className="underline hover:opacity-50 font-bold">
-                            <p>{content.name}</p>
-                        </Link>
-                        <p className="opacity-60">{content.status}</p>
+                    <div key={content.id} className="flex justify-between items-center space-y-2 border-b last:border-none pb-4">
+                        <div>
+                            <Link to={`/project/${projectId}/content/${content.id}`} className="underline hover:opacity-50 font-bold">
+                                <p>{content.name}</p>
+                            </Link>
+                            <p className="opacity-60">{content.status}</p>
+                        </div>
+                        <button onClick={() => handleDeleteContent(content.id)} className="text-red-500">Delete</button>
                     </div>
                 )
             })}
