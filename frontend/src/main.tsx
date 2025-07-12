@@ -14,6 +14,7 @@ const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const EducationPage = lazy(() => import('./pages/EducationPage'));
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Projects = lazy(() => import("./pages/Projects"))
@@ -31,7 +32,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<AuthLayout />}>
             <Route
-              index
+              path='/dashboard'
               element={
                 <Suspense fallback={<Loading />}>
                   <Dashboard />
@@ -96,6 +97,14 @@ createRoot(document.getElementById('root')!).render(
             />
           </Route>
           <Route element={<NoAuthLayout />}>
+            <Route
+              index
+              element={
+                <Suspense fallback={<Loading />}>
+                  <EducationPage />
+                </Suspense>
+              }
+            />
             <Route
               path='login'
               element={
